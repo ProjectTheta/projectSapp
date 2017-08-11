@@ -1,8 +1,6 @@
-package com.example.suhail.loginattempt1.model;
+package com.example.suhail.loginattempt1.Models;
 
 import com.google.gson.annotations.SerializedName;
-
-import java.util.List;
 
 /**
  * Created by Suhail on 8/7/2017.

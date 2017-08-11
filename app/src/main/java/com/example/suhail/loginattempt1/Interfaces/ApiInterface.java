@@ -1,24 +1,20 @@
-package com.example.suhail.loginattempt1.Interface;
+package com.example.suhail.loginattempt1.Interfaces;
 
 /**
  * Created by Suhail on 8/7/2017.
  */
 
 
-import com.example.suhail.loginattempt1.model.LoginResponse;
-import com.example.suhail.loginattempt1.model.RegisterStudent;
+import com.example.suhail.loginattempt1.Models.LoginResponse;
+import com.example.suhail.loginattempt1.Models.RegisterStudent;
 
 import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
-import retrofit2.http.Field;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
-import retrofit2.http.GET;
 import retrofit2.http.POST;
-import retrofit2.http.Path;
-import retrofit2.http.Query;
 
 
 public interface ApiInterface {

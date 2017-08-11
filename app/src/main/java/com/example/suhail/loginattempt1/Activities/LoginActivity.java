@@ -1,4 +1,4 @@
-package com.example.suhail.loginattempt1.Activity;
+package com.example.suhail.loginattempt1.Activities;
 
 import android.content.Context;
 import android.content.Intent;
@@ -12,9 +12,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.suhail.loginattempt1.ApiClient.ApiClient;
-import com.example.suhail.loginattempt1.Interface.ApiInterface;
+import com.example.suhail.loginattempt1.Interfaces.ApiInterface;
 import com.example.suhail.loginattempt1.R;
-import com.example.suhail.loginattempt1.model.LoginResponse;
+import com.example.suhail.loginattempt1.Models.LoginResponse;
 
 
 import java.util.HashMap;

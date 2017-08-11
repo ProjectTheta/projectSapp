@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
+<ScrollView android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.suhail.loginattempt1.Activity.RegisterActivity"
+    android:padding="20dp"
+    tools:context="com.example.suhail.loginattempt1.Activities.RegisterActivity"
     android:background="@color/colorPrimary"
     android:scrollbarAlwaysDrawVerticalTrack="true">
 
@@ -12,7 +16,7 @@
         android:id="@+id/login_title"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="10dp"
         android:layout_marginTop="22dp"
         android:gravity="center_horizontal"
         android:text="Register"
@@ -21,16 +25,17 @@
         android:textStyle="bold" />
 
     <RelativeLayout
+        android:layout_below="@+id/login_title"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/login_title"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp"
-        android:layout_marginTop="40dp"
         android:background="#fff"
         android:elevation="4dp"
         android:orientation="vertical"
-        android:padding="20dp">
+        android:padding="20dp"
+        android:layout_marginBottom="31dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -127,18 +132,30 @@
                     android:singleLine="true" />
             </android.support.design.widget.TextInputLayout>
 
+            <Button
+                android:id="@+id/register_button"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="22dp"
+                android:background="@color/colorPrimaryDark"
+                android:text="Register Me"
+                android:textAllCaps="false"
+                android:textColor="#fff"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/login_act"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:paddingTop="10dp"
+                android:textColor="@color/text_view_color"
+                android:text="Already Registered? Sign In" />
+
         </LinearLayout>
 
     </RelativeLayout>
 
-    <ImageButton
-        android:id="@+id/user_profile_photo"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:background="@mipmap/loginschool"
-        android:elevation="4dp"
-        android:layout_alignTop="@+id/login_title"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="34dp" />
 
 </RelativeLayout>
+</ScrollView>

@@ -4,7 +4,7 @@ package com.example.suhail.loginattempt1.ApiClient;
  * Created by Suhail on 8/7/2017.
  */
 
-        import com.example.suhail.loginattempt1.Interface.ApiInterface;
+        import com.example.suhail.loginattempt1.Interfaces.ApiInterface;
 
         import retrofit2.Retrofit;
         import retrofit2.converter.gson.GsonConverterFactory;

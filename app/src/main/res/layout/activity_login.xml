@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
-    tools:context="com.example.suhail.loginattempt1.Activity.LoginActivity"
+    tools:context="com.example.suhail.loginattempt1.Activities.LoginActivity"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
