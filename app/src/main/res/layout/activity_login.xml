@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
-    tools:context="com.example.suhail.loginattempt1.Activity.login"
+    tools:context="com.example.suhail.loginattempt1.Activity.LoginActivity"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorPrimary"
-    android:orientation="vertical"
     android:scrollbarAlwaysDrawVerticalTrack="true"
     xmlns:tools="http://schemas.android.com/tools">
 
@@ -16,7 +15,7 @@
         android:layout_marginBottom="16dp"
         android:layout_marginTop="22dp"
         android:gravity="center_horizontal"
-        android:text="Account Login"
+        android:text="Login"
         android:textColor="#fff"
         android:textSize="26sp"
         android:textStyle="bold" />
@@ -44,11 +43,11 @@
                 android:layout_height="wrap_content">
 
                 <EditText
-                    android:id="@+id/user_name"
+                    android:id="@+id/login_user_name"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:drawableLeft="@mipmap/user"
-                    android:hint="User Name"
+                    android:hint="Name"
                     android:inputType="textEmailAddress"
                     android:singleLine="true" />
             </android.support.design.widget.TextInputLayout>
@@ -58,7 +57,7 @@
                 android:layout_height="wrap_content">
 
                 <EditText
-                    android:id="@+id/password"
+                    android:id="@+id/login_password"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
@@ -69,11 +68,12 @@
             </android.support.design.widget.TextInputLayout>
 
             <TextView
-                android:id="@+id/forgot_passowrd"
+                android:id="@+id/forgot_password"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
-                android:paddingTop="5dp"
+                android:paddingTop="10dp"
+                android:textColor="@color/text_view_color"
                 android:text="Forgot Password?" />
 
 
@@ -87,6 +87,15 @@
                 android:textAllCaps="false"
                 android:textColor="#fff"
                 android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/register_student"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:paddingTop="10dp"
+                android:textColor="@color/text_view_color"
+                android:text="New User? Register First" />
         </LinearLayout>
     </RelativeLayout>
 
