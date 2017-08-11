@@ -1,5 +1,7 @@
 package com.example.suhail.loginattempt1.Activity;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -24,6 +26,7 @@ import retrofit2.Response;
 
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
+    Context c = LoginActivity.this;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "onCreate: In on Create");
@@ -40,7 +43,9 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-
+                Log.d(TAG, "onClick: Navigating to new Activity");
+                startActivity(new Intent(c, RegisterActivity.class));
+                finish();
             }
         });
 
