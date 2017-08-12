@@ -9,10 +9,14 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,6 +30,8 @@ public class RegisterActivity extends AppCompatActivity {
     private static final String TAG = "RegisterActivity";
     EditText et_name, et_email, et_password, et_address, et_mobile;
     RadioGroup radioGroup;
+    Context c = RegisterActivity.this;
+    LinearLayout ll_check;
     RadioButton rb_non_med, rb_med, rb_arts, rb_commerce;
     Button bt_register;
     Spinner sp_class;
@@ -40,6 +46,8 @@ public class RegisterActivity extends AppCompatActivity {
         Context c = RegisterActivity.this;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+
+        ll_check = (LinearLayout) findViewById(R.id.ll_checkboxes);
 
         sp_class = (Spinner) findViewById(R.id.class_spinner);
         radioGroup = (RadioGroup) findViewById(R.id.stream_group);
@@ -87,6 +95,10 @@ public class RegisterActivity extends AppCompatActivity {
 
         setUpRadioGroup();
 
+        /**
+         * ------------------------------------------------------------------------------------------------------
+         */
+
         bt_register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -102,12 +114,39 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void setUpRadioGroup() {
 
+        final List<String> optionalSubjectList = new ArrayList<String>();
         Log.d(TAG, "setUpRadioGroup: Setting up the radio Group");
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
+                TextView tv_new = new TextView(c);
+                tv_new.setText("Please choose your additional subjects....");
+                ll_check.addView(tv_new);
+                Log.d(TAG, "onCheckedChanged: In Radio Change");
                 if(checkedId == rb_non_med.getId()) {
-                    Toast.makeText(getApplicationContext(), "You Chose non med.....", Toast.LENGTH_SHORT).show();
+                    //Hard coded for the time being but will come from the api once added
+                    optionalSubjectList.add("Computer Science");
+                    optionalSubjectList.add("Physical Education");
+                    optionalSubjectList.add("ED");
+                    for(int i = 0 ; i < optionalSubjectList.size(); i++) {
+                        CheckBox cb = new CheckBox(c);
+                        cb.setId(i);
+                        cb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                            @Override
+                            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                                switch (buttonView.getId()){
+                                    case 1: extraSubjects.add(optionalSubjectList.get(0));
+                                        break;
+                                    case 2: extraSubjects.add(optionalSubjectList.get(1));
+                                        break;
+                                    case 3: extraSubjects.add(optionalSubjectList.get(2));
+                                }
+                            }
+                        });
+                        cb.setText(optionalSubjectList.get(i));
+                        ll_check.addView(cb);
+                        Log.d(TAG, "onCheckedChanged: " + extraSubjects.toString());
+                    }
                 }
                 if(checkedId == rb_med.getId()) {
                     Toast.makeText(getApplicationContext(), "You Chose med.....", Toast.LENGTH_SHORT).show();
