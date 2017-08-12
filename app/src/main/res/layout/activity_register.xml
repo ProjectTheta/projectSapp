@@ -102,20 +102,60 @@
                     android:singleLine="true" />
             </android.support.design.widget.TextInputLayout>
 
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
 
-                <EditText
-                    android:id="@+id/register_class"
-                    android:layout_width="fill_parent"
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:layout_gravity="left"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:textColor="@color/black"
+                android:text="Class"/>
+
+            <Spinner
+                android:id="@+id/class_spinner"
+                android:layout_width="match_parent"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:layout_height="wrap_content"
+                ></Spinner>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="11dp"
+                android:layout_gravity="left"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:textColor="@color/alert_color"
+                android:text="*For Senior Secondary classes please select your stream"/>
+
+            <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="fill_parent"
+                android:id="@+id/stream_group"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <RadioButton android:id="@+id/stream_science"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:drawableLeft="@drawable/ic_mobile"
-                    android:hint="Class"
-                    android:inputType="text"
-                    android:singleLine="true" />
-            </android.support.design.widget.TextInputLayout>
+                    android:text="Non Medical" />
+                <RadioButton android:id="@+id/stream_commerce"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Commerce" />
+
+                <RadioButton android:id="@+id/stream_arts"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Arts" />
+
+                <RadioButton android:id="@+id/stream_medical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Medical" />
+
+            </RadioGroup>
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
