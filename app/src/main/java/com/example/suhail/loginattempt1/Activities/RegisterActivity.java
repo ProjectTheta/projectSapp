@@ -128,33 +128,30 @@ public class RegisterActivity extends AppCompatActivity {
                     optionalSubjectList.add("Computer Science");
                     optionalSubjectList.add("Physical Education");
                     optionalSubjectList.add("ED");
+                    optionalSubjectList.add("Economics");
+                    CheckBox[] cb_array = new CheckBox[optionalSubjectList.size()];
                     for(int i = 0 ; i < optionalSubjectList.size(); i++) {
-                        CheckBox cb = new CheckBox(c);
-                        cb.setId(i);
-                        cb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                            @Override
-                            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                                switch (buttonView.getId()){
-                                    case 1: extraSubjects.add(optionalSubjectList.get(0));
-                                        break;
-                                    case 2: extraSubjects.add(optionalSubjectList.get(1));
-                                        break;
-                                    case 3: extraSubjects.add(optionalSubjectList.get(2));
-                                }
-                            }
-                        });
-                        cb.setText(optionalSubjectList.get(i));
-                        ll_check.addView(cb);
-                        Log.d(TAG, "onCheckedChanged: " + extraSubjects.toString());
+                        cb_array[i] = new CheckBox(c);
+                        cb_array[i].setId(i);
+                        cb_array[i].setText(optionalSubjectList.get(i));
+                        ll_check.addView(cb_array[i]);
                     }
                 }
                 if(checkedId == rb_med.getId()) {
+                    optionalSubjectList.add("Physical Education");
+                    optionalSubjectList.add("Maths");
+                    optionalSubjectList.add("Economics");
                     Toast.makeText(getApplicationContext(), "You Chose med.....", Toast.LENGTH_SHORT).show();
                 }
                 if(checkedId == rb_commerce.getId()) {
+                    optionalSubjectList.add("Maths");
+                    optionalSubjectList.add("IT");
                     Toast.makeText(getApplicationContext(), "You Chose commerce.....", Toast.LENGTH_SHORT).show();
                 }
                 if(checkedId == rb_arts.getId()) {
+                    optionalSubjectList.add("Pschology");
+                    optionalSubjectList.add("Physical Eduction");
+                    optionalSubjectList.add("IT");
                     Toast.makeText(getApplicationContext(), "You Chose arts.....", Toast.LENGTH_SHORT).show();
                 }
             }
