@@ -82,20 +82,45 @@ public class RegisterActivity extends AppCompatActivity {
          */
 
         /**
-         * Setting up the Radio Buttons
+         * setting up radio buttons
          */
+
+        setUpRadioGroup();
 
         bt_register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "onClick: Register activation");
-
                 String name = et_name.getText().toString();
                 String email = et_email.getText().toString();
 
                 //registerStudent()
             }
         });
+    }
+
+
+    private void setUpRadioGroup() {
+
+        Log.d(TAG, "setUpRadioGroup: Setting up the radio Group");
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
+                if(checkedId == rb_non_med.getId()) {
+                    Toast.makeText(getApplicationContext(), "You Chose non med.....", Toast.LENGTH_SHORT).show();
+                }
+                if(checkedId == rb_med.getId()) {
+                    Toast.makeText(getApplicationContext(), "You Chose med.....", Toast.LENGTH_SHORT).show();
+                }
+                if(checkedId == rb_commerce.getId()) {
+                    Toast.makeText(getApplicationContext(), "You Chose commerce.....", Toast.LENGTH_SHORT).show();
+                }
+                if(checkedId == rb_arts.getId()) {
+                    Toast.makeText(getApplicationContext(), "You Chose arts.....", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
     }
 
 
