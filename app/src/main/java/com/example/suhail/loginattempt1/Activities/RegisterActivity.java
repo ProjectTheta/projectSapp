@@ -20,6 +20,7 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.suhail.loginattempt1.Models.RegisterStudent;
 import com.example.suhail.loginattempt1.R;
 
 import java.util.ArrayList;
@@ -32,7 +33,7 @@ import java.util.List;
 public class RegisterActivity extends AppCompatActivity {
 
     private static final String TAG = "RegisterActivity";
-    EditText et_name, et_email, et_password, et_address, et_mobile;
+    EditText et_name, et_email, et_password, et_address, et_mobile, et_optionals;
     RadioGroup radioGroup;
     Context c = RegisterActivity.this;
     LinearLayout ll_check;
@@ -46,6 +47,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         Log.d(TAG, "onCreate: In oncreate");
         Context c = RegisterActivity.this;
         super.onCreate(savedInstanceState);
@@ -107,60 +109,66 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "onClick: Register activation");
-                String name = et_name.getText().toString();
-                String email = et_email.getText().toString();
-
-                //registerStudent()
+                Toast.makeText(getApplicationContext(), "ArrayList is: " + extraSubjects.toString(), Toast.LENGTH_SHORT).show();
+                registerStudent();
             }
         });
     }
 
+    /**
+     * Register the student with the entered credentials
+     */
+
+    private void registerStudent() {
+        String name = et_name.getText().toString();
+        String address = et_address.getText().toString();
+        String stud_class = student_class;
+        String mobile = et_mobile.getText().toString();
+        String email = et_email.getText().toString();
+        //Send this to the api
+        RegisterStudent student = new RegisterStudent(name, email,
+                                                    address, mobile,
+                                                    stud_class, extraSubjects);
+    }
+
+    /**
+     * Method to setup the radio button
+     */
 
     private void setUpRadioGroup() {
 
-        final List<String> optionalSubjectList = new ArrayList<String>();
         Log.d(TAG, "setUpRadioGroup: Setting up the radio Group");
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
-                TextView tv_new = new TextView(c);
-                tv_new.setText("Please choose your additional subjects....");
-                ll_check.addView(tv_new);
+
                 Log.d(TAG, "onCheckedChanged: In Radio Change");
                 if(checkedId == rb_non_med.getId()) {
-                    //Hard coded for the time being but will come from the api once added
-                    optionalSubjectList.add("Computer Science");
-                    optionalSubjectList.add("Physical Education");
-                    optionalSubjectList.add("ED");
-                    optionalSubjectList.add("Economics");
-                    CheckBox[] cb_array = new CheckBox[optionalSubjectList.size()];
-                    for(int i = 0 ; i < optionalSubjectList.size(); i++) {
-                        cb_array[i] = new CheckBox(c);
-                        cb_array[i].setId(i);
-                        cb_array[i].setText(optionalSubjectList.get(i));
-                        ll_check.addView(cb_array[i]);
-                    }
-                }
-                if(checkedId == rb_med.getId()) {
-                    optionalSubjectList.add("Physical Education");
-                    optionalSubjectList.add("Maths");
-                    optionalSubjectList.add("Economics");
+
+                    setUpCheckBoxStrings(checkedId);
+
+                } else if(checkedId == rb_med.getId()) {
+
+                    setUpCheckBoxStrings(checkedId);
+
+                } else if(checkedId == rb_commerce.getId()) {
+
+                    setUpCheckBoxStrings(checkedId);
+
+                } else if(checkedId == rb_arts.getId()) {
+
+                    setUpCheckBoxStrings(checkedId);
 
                 }
-                if(checkedId == rb_commerce.getId()) {
-                    optionalSubjectList.add("Maths");
-                    optionalSubjectList.add("IT");
-                }
-                if(checkedId == rb_arts.getId()) {
-                    optionalSubjectList.add("Pschology");
-                    optionalSubjectList.add("Physical Eduction");
-                    optionalSubjectList.add("IT");
-                }
+
             }
         });
 
     }
 
+    /**
+     * Used to get the item selected by the student and send it to the server
+     */
 
     private void setClickListener() {
 
@@ -168,20 +176,120 @@ public class RegisterActivity extends AppCompatActivity {
         sp_class.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Log.d(TAG, "onItemSelected: Selecting an item");
-                String item = parent.getItemAtPosition(position).toString();
-                student_class = item;
+                student_class = classList.get(position);
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-
+                //Will handle this as an alert.....
             }
         });
     }
 
+    /**
+     * Method to setUp the optional Subjects according to the radio button selected
+     */
+
+    private void setUpCheckBoxStrings(int id) {
+
+        List<String> moptionalSubjects = new ArrayList<String>();
+        Log.d(TAG, "setUpCheckBoxes: Setting up the checkboxes....");
+        TextView tv_info = new TextView(c);
+        tv_info.setText("Please choose the optional subjects");
+        ll_check.removeAllViews();
+        ll_check.addView(tv_info);
+
+        if(id == R.id.stream_science) {
+
+            moptionalSubjects.add("Physical");
+            moptionalSubjects.add("Computer Science");
+            moptionalSubjects.add("ED");
+            moptionalSubjects.add("Economics");
+
+        } else if(id == R.id.stream_medical) {
+
+            moptionalSubjects.add("Physical");
+            moptionalSubjects.add("Economics");
+
+        } else if(id == R.id.stream_commerce) {
+
+            moptionalSubjects.add("Physical");
+            moptionalSubjects.add("Information Technology");
+            moptionalSubjects.add("Maths");
+
+        } else {
+            moptionalSubjects.add("Physical");
+            moptionalSubjects.add("Information Technology");
+            moptionalSubjects.add("Sociology");
+            moptionalSubjects.add("Sychology");
+        }
+
+        setUpCheckBoxes(moptionalSubjects);
+
+    }
+
+    /**
+     * Setting up boxes with the optional Subjects
+     * @param moptionalSubjects
+     */
+
+    private void setUpCheckBoxes(List<String> moptionalSubjects) {
+
+        Log.d(TAG, "setUpCheckBoxes: Setting up final check boxes");
+        
+        for(int i = 0 ; i < moptionalSubjects.size() ; i++) {
+            
+            CheckBox cb = new CheckBox(c);
+            cb.setId(i);
+            cb.setText(moptionalSubjects.get(i));
+            ll_check.addView(cb);
+            
+            //Listener for check events.....
+            cb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                    if(isChecked) {
+                        addStringtoOptionals(buttonView.getText().toString());
+                    } else {
+                        removeStringifUnchecked(buttonView.getText().toString());
+                    }
+
+                }
+            });
+        }
+    }
+
+    /**
+     * Removing unselected String from optionals
+     * @param s
+     */
+
+    private void removeStringifUnchecked(String s) {
+
+        extraSubjects.remove(s);
+
+    }
+
+    /**
+     * Adding selected checkbox to the list of optionals
+     * @param s
+     */
+    private void addStringtoOptionals(String s) {
+
+        extraSubjects.add(s);
+
+    }
+
+
+    /**
+     * Method to setup the spinner
+     * @param data
+     * @param c
+     */
 
     private void setUpSpinner(List<String> data, Context c) {
+
         Log.d(TAG, "setUpSpinner: Setting Up Spinner");
 
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(c, android.R.layout.simple_spinner_item, data);
@@ -189,6 +297,7 @@ public class RegisterActivity extends AppCompatActivity {
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         sp_class.setAdapter(dataAdapter);
+
     }
 
 

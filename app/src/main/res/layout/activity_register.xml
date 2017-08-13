@@ -53,7 +53,7 @@
                     android:layout_height="wrap_content"
                     android:drawableLeft="@drawable/ic_user"
                     android:hint="Name"
-                    android:inputType="textEmailAddress"
+                    android:inputType="text"
                     android:singleLine="true" />
             </android.support.design.widget.TextInputLayout>
 
@@ -161,8 +161,17 @@
             <LinearLayout
                 android:id="@+id/ll_checkboxes"
                 android:orientation="vertical"
+                android:layout_marginTop="10dp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"></LinearLayout>
+                android:layout_height="wrap_content">
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                </android.support.design.widget.TextInputLayout>
+
+            </LinearLayout>
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
