@@ -145,18 +145,16 @@ public class RegisterActivity extends AppCompatActivity {
                     optionalSubjectList.add("Physical Education");
                     optionalSubjectList.add("Maths");
                     optionalSubjectList.add("Economics");
-                    Toast.makeText(getApplicationContext(), "You Chose med.....", Toast.LENGTH_SHORT).show();
+
                 }
                 if(checkedId == rb_commerce.getId()) {
                     optionalSubjectList.add("Maths");
                     optionalSubjectList.add("IT");
-                    Toast.makeText(getApplicationContext(), "You Chose commerce.....", Toast.LENGTH_SHORT).show();
                 }
                 if(checkedId == rb_arts.getId()) {
                     optionalSubjectList.add("Pschology");
                     optionalSubjectList.add("Physical Eduction");
                     optionalSubjectList.add("IT");
-                    Toast.makeText(getApplicationContext(), "You Chose arts.....", Toast.LENGTH_SHORT).show();
                 }
             }
         });
