@@ -17,6 +17,7 @@ import com.example.suhail.loginattempt1.Models.LoginStudent;
 import com.example.suhail.loginattempt1.Models.ResponseForRegistrattion;
 import com.example.suhail.loginattempt1.R;
 import com.example.suhail.loginattempt1.Models.LoginResponse;
+import com.example.suhail.loginattempt1.Utils.SessionHelper;
 
 
 import java.util.HashMap;
@@ -36,7 +37,7 @@ public class LoginActivity extends AppCompatActivity {
     EditText contact;
     EditText password;
     Button bt_signin;
-    String[] para=null;
+    SessionHelper sessionHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +45,8 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        sessionHelper = new SessionHelper(c);
+        checksharedpreferences();
         contact = (EditText) findViewById(R.id.login_contact);
         password = (EditText) findViewById(R.id.login_password);
         registerStudent = (TextView) findViewById(R.id.register_student);
@@ -63,10 +66,14 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-
-
-
-
+    private void checksharedpreferences() {
+        Log.d(TAG, "checksharedpreferences: Chcking Shared Preferences");
+        boolean isLoggedIn = sessionHelper.isLoggedIn();
+        if(isLoggedIn) {
+            startActivity(new Intent(c, MainActivity.class));
+            finish();
+        }
+    }
 
     public void LoginAttempt(String contact, String password) {
 
@@ -88,8 +95,7 @@ public class LoginActivity extends AppCompatActivity {
                 } else {
                     Log.d(TAG, "onResponse: Got the response: " + login_results.getMessage());
                     if (login_results.getStatus() == 1) {
-                        //handleresponse(login_results.getContact(), login_results.getSid());
-                        Toast.makeText(c, "Login done", Toast.LENGTH_SHORT).show();
+                        handleresponse(login_results.getContact(), login_results.getSid());
                     } else {
                         Toast.makeText(LoginActivity.this, "Some error", Toast.LENGTH_SHORT).show();
                     }
@@ -106,9 +112,12 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
+
     public void handleresponse(String contact, String sid) {
 
         Log.d(TAG, "handleresponse: Handling the Response");
+        sessionHelper.createLoginSession(contact, sid);
+        startActivity(new Intent(c, MainActivity.class));
 
     }
 

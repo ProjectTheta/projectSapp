@@ -27,10 +27,10 @@ public class SessionHelper {
     private static final String IS_LOGIN = "IsLoggedIn";
 
     // User name (make variable public to access from outside)
-    public static final String KEY_NAME = "name";
+    public static final String KEY_ID = "sid";
 
     // Email address (make variable public to access from outside)
-    public static final String KEY_EMAIL = "email";
+    public static final String KEY_CONTACT = "contact";
 
     /**
      * Constructor to initialise
@@ -44,15 +44,15 @@ public class SessionHelper {
     }
 
     /**
-     * Create a login session once the user is successfully logged in
-     * @param name
-     * @param email
+     *
+     * @param contact
+     * @param sid
      */
 
-    public void createLoginSession(String name, String email) {
+    public void createLoginSession(String contact, String sid) {
 
-        editor.putString(KEY_NAME, name);
-        editor.putString(KEY_EMAIL, email);
+        editor.putString(KEY_CONTACT, contact);
+        editor.putString(KEY_ID, sid);
         editor.putBoolean(IS_LOGIN, true);
         editor.commit();
 
@@ -67,11 +67,11 @@ public class SessionHelper {
 
         HashMap<String, String> user = new HashMap<String, String>();
 
-        // user name
-        user.put(KEY_NAME, sharedPreferences.getString(KEY_NAME, null));
+        // user contact
+        user.put(KEY_CONTACT, sharedPreferences.getString(KEY_CONTACT, null));
 
-        // user email id
-        user.put(KEY_EMAIL, sharedPreferences.getString(KEY_EMAIL, null));
+        // user id
+        user.put(KEY_ID, sharedPreferences.getString(KEY_ID, null));
 
         // return user
         return user;
@@ -82,14 +82,16 @@ public class SessionHelper {
      * To return login status
      * @return
      */
+
     public boolean isLoggedIn() {
 
         return sharedPreferences.getBoolean(IS_LOGIN, false);
 
     }
 
+
     /**
-     * Check if no user logged in
+     * Check if no user logged in after starting main activity and if not logged in send to the login activity
      */
 
     public void checkLoginStatus() {
@@ -106,6 +108,10 @@ public class SessionHelper {
         }
     }
 
+
+    /**
+     * While Signing out user
+     */
     public void logOutUser() {
 
         //Clearing all data from the shared preferences
