@@ -131,6 +131,7 @@ public class RegisterActivity extends AppCompatActivity {
      */
 
     private void registerStudent() {
+
         Log.d(TAG, "registerStudent: Registering Student");
         String name = et_name.getText().toString();
         String stud_class = student_class;
@@ -146,13 +147,17 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<ResponseForRegistrattion> call, Response<ResponseForRegistrattion> response) {
                 ResponseForRegistrattion responseForRegistrattion = response.body();
-                if(responseForRegistrattion.getStatus() == 1) {
-                    Log.d(TAG, "onResponse: User Registerd....");
+                if (responseForRegistrattion == null) {
+                    Toast.makeText(RegisterActivity.this, "Server Problem plz try again later!!!!", Toast.LENGTH_SHORT).show();
                 } else {
-                    Log.d(TAG, "onResponse: User could not be registered bcoz of code " + responseForRegistrattion.getCode());
+                    if (responseForRegistrattion.getStatus() == 1) {
+                        Log.d(TAG, "onResponse: User Registered....");
+                    } else {
+                        Log.d(TAG, "onResponse: User could not be registered bcoz of reason " + responseForRegistrattion.getMessage());
+                    }
+                    startActivity(new Intent(c, MainActivity.class));
+                    finish();
                 }
-                startActivity(new Intent(c, MainActivity.class));
-                finish();
             }
 
             @Override
@@ -282,39 +287,6 @@ public class RegisterActivity extends AppCompatActivity {
 
     }
 
-/*
-    private void setUpRadioGroup(int id) {
-
-        Log.d(TAG, "setUpRadioGroup: Setting up the radio Group");
-        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
-
-                Log.d(TAG, "onCheckedChanged: In Radio Change");
-                if (checkedId == rb_non_med.getId()) {
-
-                    setUpCheckBoxStrings(checkedId);
-
-                } else if (checkedId == rb_med.getId()) {
-
-                    setUpCheckBoxStrings(checkedId);
-
-                } else if (checkedId == rb_commerce.getId()) {
-
-                    setUpCheckBoxStrings(checkedId);
-
-                } else if (checkedId == rb_arts.getId()) {
-
-                    setUpCheckBoxStrings(checkedId);
-
-                }
-
-            }
-        });
-
-    }
-
-*/
 
     /**
      * Used to get the item selected by the student and send it to the server
@@ -399,11 +371,6 @@ public class RegisterActivity extends AppCompatActivity {
         LinearLayout layout;
         layout = (LinearLayout) findViewById(R.id.optionallayout); //layout n which checkboxes will be added
         layout.removeAllViews();
-
-
-        /*
-        Setup linear layout for check boxes
-         */
         LinearLayout.LayoutParams checkparams = new LinearLayout.LayoutParams(
 
                 LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -421,12 +388,8 @@ public class RegisterActivity extends AppCompatActivity {
             cb.setId(i);
             cb.setText(moptionalSubjects.get(i));
             layout.addView(cb, checkparams);
-
-
-            /*
-            Listener for check events.....
-             */
             cb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
@@ -475,10 +438,6 @@ public class RegisterActivity extends AppCompatActivity {
      * @param
      */
 
-
-   /*
-         methods to store and del optional subjects
-    */
     private void clearalloptionals() {
         optionals.clear();
 

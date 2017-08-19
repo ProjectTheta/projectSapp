@@ -43,12 +43,12 @@
                 android:layout_height="wrap_content">
 
                 <EditText
-                    android:id="@+id/login_user_name"
+                    android:id="@+id/login_contact"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:drawableLeft="@mipmap/user"
-                    android:hint="Name"
-                    android:inputType="textEmailAddress"
+                    android:hint="contact"
+                    android:inputType="phone"
                     android:singleLine="true" />
             </android.support.design.widget.TextInputLayout>
 

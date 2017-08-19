@@ -10,19 +10,19 @@ public class LoginResponse {
 
     //class to handle responses from api call for login
 
-    @SerializedName("Status")
-    private String Status;
+    @SerializedName("status")
+    private int status;
     @SerializedName("message")
     private String message;
     @SerializedName("code")
     private int code;
 
-    public String getStatus() {
-        return Status;
+    public int getStatus() {
+        return status;
     }
 
-    public void setStatus(String status) {
-        Status = status;
+    public void setStatus(int status) {
+        this.status = status;
     }
 
     public String getMessage() {

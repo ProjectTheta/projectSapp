@@ -13,6 +13,8 @@ import android.widget.Toast;
 
 import com.example.suhail.loginattempt1.ApiClient.ApiClient;
 import com.example.suhail.loginattempt1.Interfaces.ApiInterface;
+import com.example.suhail.loginattempt1.Models.LoginStudent;
+import com.example.suhail.loginattempt1.Models.ResponseForRegistrattion;
 import com.example.suhail.loginattempt1.R;
 import com.example.suhail.loginattempt1.Models.LoginResponse;
 
@@ -23,14 +25,17 @@ import java.util.Map;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import retrofit2.Retrofit;
+
 //Test Commit
 public class LoginActivity extends AppCompatActivity {
 
     private static final String TAG = "LoginActivity";
     Context c = LoginActivity.this;
     TextView registerStudent;
-    EditText user_name;
+    EditText contact;
     EditText password;
+    Button bt_signin;
     String[] para=null;
 
     @Override
@@ -39,194 +44,71 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-
-      /*
-       ----------------------------------------------------------------------------------
-       */
-
-        user_name = (EditText) findViewById(R.id.login_user_name);
+        contact = (EditText) findViewById(R.id.login_contact);
         password = (EditText) findViewById(R.id.login_password);
-        para = getsignin_para(user_name, password);//to change edittext to string
-
-
-        ClickListner(para[0], para[1]);            //LoginActivity button click listner
-
-      /*
-        ------------------------------------------------------------------------------
-         */
-
-
-
-
-
-      /*
-      --------------------------------------------------------------------------------------
-      new user? sing up first click listner
-       */
-        newUserClickListner();
-       /*
-       -------------------------------------------------------------------------------------
-        */
-
-    }
-
-
-    public void newUserClickListner() {
         registerStudent = (TextView) findViewById(R.id.register_student);
-        registerStudent.setOnClickListener(new View.OnClickListener() {
+        bt_signin = (Button) findViewById(R.id.sign_in_button);
 
+        bt_signin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(TAG, "onClick: Navigating to new Activity");
-                startActivity(new Intent(c, RegisterActivity.class));
-                finish();
+                String stud_contact = contact.getText().toString();
+                String stud_password = password.getText().toString();
+                LoginAttempt(stud_contact, stud_password);
             }
         });
 
 
-    }
-
-
-    //method to get username and password in string format
-    public String[] getsignin_para(EditText username, EditText password) {
-        Log.d(TAG, "getsignin_para: Fetching Parameters");
-        String muser_name;
-        muser_name = username.getText().toString();
-        String mpassword;
-        mpassword = password.getText().toString();
-
-        String[] returnstring = {muser_name, mpassword};
-        return returnstring;
-    }
-
-
-    public void ClickListner(final String contact, final String password) {
-        Button Login_button = (Button) findViewById(R.id.sign_in_button);
-        //LoginActivity button click
-        Login_button.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        LoginAttempt(contact, password);
-                    }
-                }
-        );
 
 
     }
 
 
-    public void LoginAttempt(final String contact, String password) {
+
+
+
+
+    public void LoginAttempt(String contact, String password) {
 
         Log.d(TAG, "LoginAttempt: Attempting login");
-        ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
-
-        /*
-        put parameters in map to be passed to api call here
-         */
-        Map<String, String> map = new HashMap<String, String>();
-
-        /*
-        para_1 contact
-         */
-        map.put("contact", contact);
-        /*
-        para_2 password
-         */
-
-        map.put("password", password);
-
-        /*
-        call to api
-         */
-
-        Call<LoginResponse> call = apiInterface.doLogin(map); //call
-
-        call.enqueue(new Callback<LoginResponse>() {          //putting in q
+        Retrofit retrofit = ApiClient.getClient();
+        ApiInterface apiInterface = retrofit.create(ApiInterface.class);
+        LoginStudent student = new LoginStudent(contact, password);
+        Call<ResponseForRegistrattion> call = apiInterface.doLogin(student);
+        call.enqueue(new Callback<ResponseForRegistrattion>() {
 
             @Override
-            public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
+            public void onResponse(Call<ResponseForRegistrattion> call, Response<ResponseForRegistrattion> response) {
+                Log.d(TAG, "onResponse: Response parsing");
 
-                String message=response.message();
-                int StatusCode = response.code();
+                ResponseForRegistrattion login_results = response.body();
 
-                Log.d("Login_Response_Code", String.valueOf(StatusCode));
-                Log.d("Login_Response_Message",message);
-
-
-                LoginResponse login_results = response.body();
-
-
-
-
-               /*
-               ------------------------------------------------------------------------------
-               to handle null point exception
-                */
                 if (login_results == null) {
-                    Log.d("Login_Response : ", "Nothing received");
-                    Toast.makeText(LoginActivity.this, "Something went wrong, try again later", Toast.LENGTH_LONG).show();
-
-               /*
-                    -------------------------------------------------------------------------------
-                     */
-
-                } else
-
-                {
-                    Toast.makeText(LoginActivity.this, StatusCode + login_results.getStatus() + login_results.getCode() + login_results.getMessage(), Toast.LENGTH_SHORT).show();
-
-
-                    handleresponse(login_results.getMessage(), login_results.getStatus(), login_results.getCode());
-
+                    Toast.makeText(c, "Server Error", Toast.LENGTH_SHORT).show();
+                } else {
+                    Log.d(TAG, "onResponse: Got the response: " + login_results.getMessage());
+                    if (login_results.getStatus() == 1) {
+                        //handleresponse(login_results.getContact(), login_results.getSid());
+                        Toast.makeText(c, "Login done", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(LoginActivity.this, "Some error", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
 
             @Override
-            public void onFailure(Call<LoginResponse> call, Throwable t) {
+            public void onFailure(Call<ResponseForRegistrattion> call, Throwable t) {
 
-                Log.d("Login_Failure_Code",t.toString());
-                Toast.makeText(LoginActivity.this, "Something went wrong, try again later/n" + t.toString(), Toast.LENGTH_LONG).show();
+                Log.d(TAG, "onFailure: Something went wrong: " + t.toString());
 
             }
         });
 
     }
 
-    public void handleresponse(String message_rec, String status_rec, int code_rec) {
+    public void handleresponse(String contact, String sid) {
+
         Log.d(TAG, "handleresponse: Handling the Response");
-        String message = message_rec;
-        String status = status_rec;
-        int code = code_rec;
-
-        switch (code) {
-             /*
-                0 for suceesful LoginActivity
-                2 for user_does_not_exist
-                1 for user exist but incorrect password
-             */
-
-
-            case 0:
-
-                /*
-                  pass intent to main activity here  //successfull LoginActivity
-                 */
-                break;
-
-            case 2:
-
-                /*user_doesnot_exist
-                  put code here
-                */
-                break;
-
-            case 1:
-                /*    password_incorrect
-                      put code here
-                 */
-                break;
-        }
 
     }
 

@@ -14,7 +14,24 @@ public class ResponseForRegistrattion {
 
     private int status;
     private String message;
-    private int code;
+    private String sid;
+    private String contact;
+
+    public String getSid() {
+        return sid;
+    }
+
+    public void setSid(String sid) {
+        this.sid = sid;
+    }
+
+    public String getContact() {
+        return contact;
+    }
+
+    public void setContact(String contact) {
+        this.contact = contact;
+    }
 
     public void setStatus(int status) {
         this.status = status;
@@ -24,9 +41,7 @@ public class ResponseForRegistrattion {
         this.message = message;
     }
 
-    public void setCode(int code) {
-        this.code = code;
-    }
+
 
     public int getStatus() {
         return status;
@@ -36,7 +51,4 @@ public class ResponseForRegistrattion {
         return message;
     }
 
-    public int getCode() {
-        return code;
-    }
 }
