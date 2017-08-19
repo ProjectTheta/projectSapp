@@ -25,6 +25,7 @@ import com.example.suhail.loginattempt1.Interfaces.ApiInterface;
 import com.example.suhail.loginattempt1.Models.RegisterStudent;
 import com.example.suhail.loginattempt1.Models.ResponseForRegistrattion;
 import com.example.suhail.loginattempt1.R;
+import com.example.suhail.loginattempt1.Utils.SessionHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,6 +54,7 @@ public class RegisterActivity extends AppCompatActivity {
     String Stream;
     List<String> optionals = new ArrayList<String>();
     List<String> classList = new ArrayList<String>();
+    SessionHelper sessionHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +64,7 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-
+        sessionHelper = new SessionHelper(c);
         sp_class = (Spinner) findViewById(R.id.class_spinner);
         radioGroup = (RadioGroup) findViewById(R.id.stream_group);
 
@@ -152,6 +154,7 @@ public class RegisterActivity extends AppCompatActivity {
                 } else {
                     if (responseForRegistrattion.getStatus() == 1) {
                         Log.d(TAG, "onResponse: User Registered....");
+                        handleRegisteredUser(responseForRegistrattion.getContact(), responseForRegistrattion.getSid());
                     } else {
                         Log.d(TAG, "onResponse: User could not be registered bcoz of reason " + responseForRegistrattion.getMessage());
                     }
@@ -166,6 +169,12 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void handleRegisteredUser(String contact, String sid) {
+        sessionHelper.createLoginSession(contact, sid);
+        startActivity(new Intent(c, MainActivity.class));
+        finish();
     }
 
 
