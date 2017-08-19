@@ -1,11 +1,14 @@
 package com.example.suhail.loginattempt1.Activities;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.IdRes;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -42,6 +45,7 @@ public class RegisterActivity extends AppCompatActivity {
     Spinner sp_class;
     String student_class;
     TextView tv_login;
+    String Stream;
     List<String> extraSubjects = new ArrayList<String>();
     List<String> classList = new ArrayList<String>();
 
@@ -53,14 +57,10 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        ll_check = (LinearLayout) findViewById(R.id.ll_checkboxes);
 
         sp_class = (Spinner) findViewById(R.id.class_spinner);
         radioGroup = (RadioGroup) findViewById(R.id.stream_group);
-        rb_non_med = (RadioButton) findViewById(R.id.stream_science);
-        rb_med = (RadioButton) findViewById(R.id.stream_medical);
-        rb_arts = (RadioButton) findViewById(R.id.stream_arts);
-        rb_commerce = (RadioButton) findViewById(R.id.stream_commerce);
+
 
         et_name = (EditText) findViewById(R.id.register_user_name);
         et_email = (EditText) findViewById(R.id.register_email);
@@ -99,20 +99,27 @@ public class RegisterActivity extends AppCompatActivity {
          * setting up radio buttons
          */
 
-        setUpRadioGroup();
 
         /**
          * ------------------------------------------------------------------------------------------------------
          */
 
-        bt_register.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d(TAG, "onClick: Register activation");
-                Toast.makeText(getApplicationContext(), "ArrayList is: " + extraSubjects.toString(), Toast.LENGTH_SHORT).show();
-                registerStudent();
-            }
-        });
+        registerbuttonlistner();
+
+
+        tv_login.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent i = new Intent(RegisterActivity.this, LoginActivity.class);
+                        startActivity(i);
+                        finish();
+
+                    }
+                }
+        );
+
+
     }
 
     /**
@@ -120,22 +127,139 @@ public class RegisterActivity extends AppCompatActivity {
      */
 
     private void registerStudent() {
+
         String name = et_name.getText().toString();
         String address = et_address.getText().toString();
         String stud_class = student_class;
         String mobile = et_mobile.getText().toString();
         String email = et_email.getText().toString();
+        String password = et_password.getText().toString();
         //Send this to the api
         RegisterStudent student = new RegisterStudent(name, email,
-                                                    address, mobile,
-                                                    stud_class, extraSubjects);
+                address, mobile,
+                stud_class, extraSubjects, Stream, password);
     }
+
+
+    /*
+     method to clear layouts
+     */
+    void clearlayouts() {
+
+       /*
+       Clear Radio Group
+        */
+        RadioGroup ll;
+        ll = (RadioGroup) findViewById(R.id.stream_group);
+        ll.setOrientation(LinearLayout.VERTICAL);
+        ll.clearCheck();
+        ll.removeAllViews();
+
+
+        /*
+        Clear chechboxes and Edittext
+         */
+        LinearLayout layout;
+        layout = (LinearLayout) findViewById(R.id.optionallayout); //layout n which checkboxes will be added
+        layout.removeAllViews();
+        LinearLayout layout1;
+        layout1 = (LinearLayout) findViewById(R.id.streamlayout);
+        layout1.removeAllViews();
+
+    }
+
+
+    /*
+    method to dynamically setup streqam checkboxes
+     */
+    private void SetUpStreamCheckBox() {
+
+        String[] Streams = getResources().getStringArray(R.array.Streams);
+
+
+        RadioGroup ll;
+        ll = (RadioGroup) findViewById(R.id.stream_group);
+        ll.setOrientation(LinearLayout.VERTICAL);
+        ll.clearCheck();
+        ll.removeAllViews();
+
+
+        for (int i = 0; i < Streams.length; i++) {
+
+            RadioButton cb = new RadioButton(c);
+            cb.setId(i);
+            cb.setText(Streams[i]);
+            ll.addView(cb);
+
+            /*
+              Listener for check events.....
+             */
+            cb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                    if (isChecked) {
+
+                        addStream(buttonView.getText().toString());
+                        setUpCheckBoxStrings(buttonView.getId());
+                        Toast.makeText(c, buttonView.getText(), Toast.LENGTH_SHORT).show();
+
+                    } else {
+
+                        removeStream(buttonView.getText().toString());
+                    }
+
+                }
+            });
+        }
+
+    }
+
+
+    /*----------------------------------------------------------------------------------------------------
+      methods to handle stream
+     */
+    void addStream(String str) {
+        Stream = str;
+
+    }
+
+    void removeStream(String str) {
+        if (Stream == str) {
+            Stream = null;
+        }
+
+    }
+    /*
+--------------------------------------------------------------------------------------------------
+     */
+
 
     /**
      * Method to setup the radio button
      */
 
-    private void setUpRadioGroup() {
+    void setUpText(int code) {
+        if (code == 1) {
+            LinearLayout layout;
+            layout = (LinearLayout) findViewById(R.id.streamlayout);
+            layout.removeAllViews();
+            LinearLayout.LayoutParams checkparams = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            checkparams.setMargins(10, 10, 10, 10);
+            checkparams.gravity = Gravity.LEFT;
+
+            TextView textView = new TextView(this);
+            textView.setText("Choose Stream");
+            layout.addView(textView, checkparams);
+
+        }
+
+
+    }
+
+/*
+    private void setUpRadioGroup(int id) {
 
         Log.d(TAG, "setUpRadioGroup: Setting up the radio Group");
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -143,19 +267,19 @@ public class RegisterActivity extends AppCompatActivity {
             public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
 
                 Log.d(TAG, "onCheckedChanged: In Radio Change");
-                if(checkedId == rb_non_med.getId()) {
+                if (checkedId == rb_non_med.getId()) {
 
                     setUpCheckBoxStrings(checkedId);
 
-                } else if(checkedId == rb_med.getId()) {
+                } else if (checkedId == rb_med.getId()) {
 
                     setUpCheckBoxStrings(checkedId);
 
-                } else if(checkedId == rb_commerce.getId()) {
+                } else if (checkedId == rb_commerce.getId()) {
 
                     setUpCheckBoxStrings(checkedId);
 
-                } else if(checkedId == rb_arts.getId()) {
+                } else if (checkedId == rb_arts.getId()) {
 
                     setUpCheckBoxStrings(checkedId);
 
@@ -165,6 +289,8 @@ public class RegisterActivity extends AppCompatActivity {
         });
 
     }
+
+*/
 
     /**
      * Used to get the item selected by the student and send it to the server
@@ -176,7 +302,19 @@ public class RegisterActivity extends AppCompatActivity {
         sp_class.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
                 student_class = classList.get(position);
+
+                /*
+                to handle radiobuttons
+                 */
+                if (position == 10 || position == 11) {
+                    SetUpStreamCheckBox();
+                    setUpText(1);
+                } else {
+                    clearlayouts();
+                }
+
             }
 
             @Override
@@ -194,24 +332,20 @@ public class RegisterActivity extends AppCompatActivity {
 
         List<String> moptionalSubjects = new ArrayList<String>();
         Log.d(TAG, "setUpCheckBoxes: Setting up the checkboxes....");
-        TextView tv_info = new TextView(c);
-        tv_info.setText("Please choose the optional subjects");
-        ll_check.removeAllViews();
-        ll_check.addView(tv_info);
 
-        if(id == R.id.stream_science) {
+        if (id == 0) {
 
             moptionalSubjects.add("Physical");
             moptionalSubjects.add("Computer Science");
             moptionalSubjects.add("ED");
             moptionalSubjects.add("Economics");
 
-        } else if(id == R.id.stream_medical) {
+        } else if (id == 1) {
 
             moptionalSubjects.add("Physical");
             moptionalSubjects.add("Economics");
 
-        } else if(id == R.id.stream_commerce) {
+        } else if (id == 2) {
 
             moptionalSubjects.add("Physical");
             moptionalSubjects.add("Information Technology");
@@ -230,40 +364,101 @@ public class RegisterActivity extends AppCompatActivity {
 
     /**
      * Setting up boxes with the optional Subjects
+     *
      * @param moptionalSubjects
      */
 
     private void setUpCheckBoxes(List<String> moptionalSubjects) {
 
         Log.d(TAG, "setUpCheckBoxes: Setting up final check boxes");
-        
-        for(int i = 0 ; i < moptionalSubjects.size() ; i++) {
-            
+        clearalloptionals();
+        LinearLayout layout;
+        layout = (LinearLayout) findViewById(R.id.optionallayout); //layout n which checkboxes will be added
+        layout.removeAllViews();
+
+
+        /*
+        Setup linear layout for check boxes
+         */
+        LinearLayout.LayoutParams checkparams = new LinearLayout.LayoutParams(
+
+                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        checkparams.setMargins(10, 10, 10, 10);
+        checkparams.gravity = Gravity.LEFT;
+
+
+        TextView text = new TextView(this);
+        text.setText("Choose Optionals");
+
+        layout.addView(text, checkparams);
+        for (int i = 0; i < moptionalSubjects.size(); i++) {
+
             CheckBox cb = new CheckBox(c);
             cb.setId(i);
             cb.setText(moptionalSubjects.get(i));
-            ll_check.addView(cb);
-            
-            //Listener for check events.....
+            layout.addView(cb, checkparams);
+
+
+            /*
+            Listener for check events.....
+             */
             cb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
-                    if(isChecked) {
+                    if (isChecked) {
+
                         addStringtoOptionals(buttonView.getText().toString());
+
                     } else {
+
                         removeStringifUnchecked(buttonView.getText().toString());
                     }
 
                 }
             });
         }
+
     }
+
+
+    void registerbuttonlistner() {
+        bt_register.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "onClick: Register activation");
+                Toast.makeText(getApplicationContext(), "ArrayList is: " + extraSubjects.toString(), Toast.LENGTH_SHORT).show();
+                registerStudent();
+            }
+        });
+
+
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        Intent i = new Intent(RegisterActivity.this, LoginActivity.class);
+        startActivity(i);
+        finish();
+        super.onBackPressed();
+    }
+
 
     /**
      * Removing unselected String from optionals
-     * @param s
+     *
+     * @param
      */
+
+
+   /*
+         methods to store and del optional subjects
+    */
+    private void clearalloptionals() {
+        extraSubjects.clear();
+
+    }
 
     private void removeStringifUnchecked(String s) {
 
@@ -273,6 +468,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     /**
      * Adding selected checkbox to the list of optionals
+     *
      * @param s
      */
     private void addStringtoOptionals(String s) {
@@ -284,6 +480,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     /**
      * Method to setup the spinner
+     *
      * @param data
      * @param c
      */
@@ -298,8 +495,8 @@ public class RegisterActivity extends AppCompatActivity {
 
         sp_class.setAdapter(dataAdapter);
 
-    }
 
+    }
 
 
 }

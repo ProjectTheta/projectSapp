@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">Loginattempt1</string>
+    <string-array name="Streams">
+        <item>Non-Medical(PCM)</item>
+        <item>Commerce</item>
+        <item>Arts</item>
+        <item>Medical</item>
+
+    </string-array>
+
 </resources>
