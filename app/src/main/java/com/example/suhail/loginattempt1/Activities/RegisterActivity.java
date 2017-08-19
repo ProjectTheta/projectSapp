@@ -20,11 +20,19 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.suhail.loginattempt1.ApiClient.ApiClient;
+import com.example.suhail.loginattempt1.Interfaces.ApiInterface;
 import com.example.suhail.loginattempt1.Models.RegisterStudent;
+import com.example.suhail.loginattempt1.Models.ResponseForRegistrattion;
 import com.example.suhail.loginattempt1.R;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 //Testing Branches.....
 //Dummy Commit.....
@@ -123,7 +131,7 @@ public class RegisterActivity extends AppCompatActivity {
      */
 
     private void registerStudent() {
-
+        Log.d(TAG, "registerStudent: Registering Student");
         String name = et_name.getText().toString();
         String stud_class = student_class;
         String mobile = et_mobile.getText().toString();
@@ -131,6 +139,28 @@ public class RegisterActivity extends AppCompatActivity {
         String password = et_password.getText().toString();
         //Send this to the api
         RegisterStudent student = new RegisterStudent(name, email, mobile, stud_class, optionals, password);
+        Retrofit retrofit = ApiClient.getClient();
+        ApiInterface client = retrofit.create(ApiInterface.class);
+        Call<ResponseForRegistrattion> call = client.createStudent(student);
+        call.enqueue(new Callback<ResponseForRegistrattion>() {
+            @Override
+            public void onResponse(Call<ResponseForRegistrattion> call, Response<ResponseForRegistrattion> response) {
+                ResponseForRegistrattion responseForRegistrattion = response.body();
+                if(responseForRegistrattion.getStatus() == 1) {
+                    Log.d(TAG, "onResponse: User Registerd....");
+                } else {
+                    Log.d(TAG, "onResponse: User could not be registered bcoz of code " + responseForRegistrattion.getCode());
+                }
+                startActivity(new Intent(c, MainActivity.class));
+                finish();
+            }
+
+            @Override
+            public void onFailure(Call<ResponseForRegistrattion> call, Throwable t) {
+                Log.d(TAG, "onFailure: Some error occured bcoz of: " + t.toString());
+            }
+        });
+
     }
 
 
@@ -142,6 +172,7 @@ public class RegisterActivity extends AppCompatActivity {
        /*
        Clear Radio Group
         */
+        Log.d(TAG, "clearlayouts: Clearing layouts");
         RadioGroup ll;
         ll = (RadioGroup) findViewById(R.id.stream_group);
         ll.setOrientation(LinearLayout.VERTICAL);
@@ -166,7 +197,7 @@ public class RegisterActivity extends AppCompatActivity {
     method to dynamically setup streqam checkboxes
      */
     private void SetUpStreamCheckBox() {
-
+        Log.d(TAG, "SetUpStreamCheckBox: Setting up Check boxes");
         String[] Streams = getResources().getStringArray(R.array.Streams);
 
 
@@ -419,8 +450,8 @@ public class RegisterActivity extends AppCompatActivity {
         bt_register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.d(TAG, "onClick: In register onClick");
                 Log.d(TAG, "onClick: Register activation");
-                Toast.makeText(getApplicationContext(), "ArrayList is: " + optionals.toString(), Toast.LENGTH_SHORT).show();
                 registerStudent();
             }
         });

@@ -7,6 +7,7 @@ package com.example.suhail.loginattempt1.Interfaces;
 
 import com.example.suhail.loginattempt1.Models.LoginResponse;
 import com.example.suhail.loginattempt1.Models.RegisterStudent;
+import com.example.suhail.loginattempt1.Models.ResponseForRegistrattion;
 
 import java.util.Map;
 
@@ -48,8 +49,8 @@ public interface ApiInterface {
     /**
      *Retrofit will send the ResgisterStudent object as request body
      */
-    @POST("attempt/register")
-    Call<RegisterStudent> createStudent(@Body RegisterStudent registerStudent);
+    @POST("create/student")
+    Call<ResponseForRegistrattion> createStudent(@Body RegisterStudent registerStudent);
 
 }
 

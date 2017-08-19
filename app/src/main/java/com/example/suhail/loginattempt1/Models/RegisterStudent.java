@@ -26,6 +26,7 @@ public class RegisterStudent {
 
     @SerializedName("class")
     private String sClass;
+
     private List<String> optionals;
     private String password;
 

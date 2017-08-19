@@ -12,7 +12,7 @@ package com.example.suhail.loginattempt1.ApiClient;
 
 public class ApiClient {
 
-    public static final String BASE_URL = "http://10.0.2.2/projectsapp/"; //put base url here
+    public static final String BASE_URL = "http://wittymonk.com/"; //put base url here
     private static Retrofit retrofit = null;
 
 
