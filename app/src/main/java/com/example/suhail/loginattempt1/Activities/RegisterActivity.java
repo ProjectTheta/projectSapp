@@ -2,13 +2,11 @@ package com.example.suhail.loginattempt1.Activities;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.IdRes;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -19,7 +17,6 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
-import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,7 +33,7 @@ import java.util.List;
 public class RegisterActivity extends AppCompatActivity {
 
     private static final String TAG = "RegisterActivity";
-    EditText et_name, et_email, et_password, et_address, et_mobile, et_optionals;
+    EditText et_name, et_email, et_password, et_mobile, et_optionals;
     RadioGroup radioGroup;
     Context c = RegisterActivity.this;
     LinearLayout ll_check;
@@ -46,7 +43,7 @@ public class RegisterActivity extends AppCompatActivity {
     String student_class;
     TextView tv_login;
     String Stream;
-    List<String> extraSubjects = new ArrayList<String>();
+    List<String> optionals = new ArrayList<String>();
     List<String> classList = new ArrayList<String>();
 
     @Override
@@ -65,7 +62,6 @@ public class RegisterActivity extends AppCompatActivity {
         et_name = (EditText) findViewById(R.id.register_user_name);
         et_email = (EditText) findViewById(R.id.register_email);
         et_password = (EditText) findViewById(R.id.register_password);
-        et_address = (EditText) findViewById(R.id.register_address);
         et_mobile = (EditText) findViewById(R.id.register_mobile);
         bt_register = (Button) findViewById(R.id.register_button);
         tv_login = (TextView) findViewById(R.id.login_act);
@@ -129,15 +125,12 @@ public class RegisterActivity extends AppCompatActivity {
     private void registerStudent() {
 
         String name = et_name.getText().toString();
-        String address = et_address.getText().toString();
         String stud_class = student_class;
         String mobile = et_mobile.getText().toString();
         String email = et_email.getText().toString();
         String password = et_password.getText().toString();
         //Send this to the api
-        RegisterStudent student = new RegisterStudent(name, email,
-                address, mobile,
-                stud_class, extraSubjects, Stream, password);
+        RegisterStudent student = new RegisterStudent(name, email, mobile, stud_class, optionals, password);
     }
 
 
@@ -427,7 +420,7 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "onClick: Register activation");
-                Toast.makeText(getApplicationContext(), "ArrayList is: " + extraSubjects.toString(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "ArrayList is: " + optionals.toString(), Toast.LENGTH_SHORT).show();
                 registerStudent();
             }
         });
@@ -456,13 +449,13 @@ public class RegisterActivity extends AppCompatActivity {
          methods to store and del optional subjects
     */
     private void clearalloptionals() {
-        extraSubjects.clear();
+        optionals.clear();
 
     }
 
     private void removeStringifUnchecked(String s) {
 
-        extraSubjects.remove(s);
+        optionals.remove(s);
 
     }
 
@@ -473,7 +466,7 @@ public class RegisterActivity extends AppCompatActivity {
      */
     private void addStringtoOptionals(String s) {
 
-        extraSubjects.add(s);
+        optionals.add(s);
 
     }
 
