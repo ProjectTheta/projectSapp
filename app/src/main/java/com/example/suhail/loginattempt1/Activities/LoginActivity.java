@@ -29,7 +29,8 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 //Test Commit
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity  {
+
 
     private static final String TAG = "LoginActivity";
     Context c = LoginActivity.this;
@@ -46,10 +47,12 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         sessionHelper = new SessionHelper(c);
-        checksharedpreferences();
+
+
+
         contact = (EditText) findViewById(R.id.login_contact);
         password = (EditText) findViewById(R.id.login_password);
-        registerStudent = (TextView) findViewById(R.id.register_student);
+
         bt_signin = (Button) findViewById(R.id.sign_in_button);
 
         bt_signin.setOnClickListener(new View.OnClickListener() {
@@ -60,16 +63,32 @@ public class LoginActivity extends AppCompatActivity {
                 LoginAttempt(stud_contact, stud_password);
             }
         });
+        checksharedpreferences();
 
+        registerbuttonclicklistner();
 
+    }
 
+    private void registerbuttonclicklistner() {
+
+        registerStudent = (TextView) findViewById(R.id.register_student);
+        registerStudent.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        startActivity(new Intent(LoginActivity.this,RegisterActivity.class));
+
+                    }
+                }
+        );
 
     }
 
     private void checksharedpreferences() {
         Log.d(TAG, "checksharedpreferences: Chcking Shared Preferences");
         boolean isLoggedIn = sessionHelper.isLoggedIn();
-        if(isLoggedIn) {
+        if (isLoggedIn) {
+            Log.d("inside if","launching activity");
             startActivity(new Intent(c, MainActivity.class));
             finish();
         }
@@ -117,8 +136,9 @@ public class LoginActivity extends AppCompatActivity {
 
         Log.d(TAG, "handleresponse: Handling the Response");
         sessionHelper.createLoginSession(contact, sid);
-        startActivity(new Intent(c, MainActivity.class));
+        startActivity(new Intent(LoginActivity.this, MainActivity.class));
 
     }
+
 
 }

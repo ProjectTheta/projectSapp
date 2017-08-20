@@ -3,6 +3,7 @@ package com.example.suhail.loginattempt1.Utils;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 
 import com.example.suhail.loginattempt1.Activities.LoginActivity;
 
@@ -12,7 +13,7 @@ import java.util.HashMap;
  * Created by vidur on 8/14/2017.
  */
 
-public class SessionHelper {
+public class SessionHelper extends LoginActivity {
 
     SharedPreferences sharedPreferences;
 
@@ -39,8 +40,8 @@ public class SessionHelper {
 
     public SessionHelper(Context context) {
         this.context = context;
-        sharedPreferences = context.getSharedPreferences(PREF_NAME, PRIVATE_MODE);
-        editor = sharedPreferences.edit();
+        sharedPreferences= PreferenceManager.getDefaultSharedPreferences(context);
+        editor =sharedPreferences.edit();
     }
 
     /**
@@ -54,7 +55,7 @@ public class SessionHelper {
         editor.putString(KEY_CONTACT, contact);
         editor.putString(KEY_ID, sid);
         editor.putBoolean(IS_LOGIN, true);
-        editor.commit();
+        editor.apply();
 
     }
 
@@ -85,7 +86,11 @@ public class SessionHelper {
 
     public boolean isLoggedIn() {
 
-        return sharedPreferences.getBoolean(IS_LOGIN, false);
+       if(sharedPreferences!=null)
+       {
+            return sharedPreferences.getBoolean(IS_LOGIN,false);
+        }
+        return false;
 
     }
 
