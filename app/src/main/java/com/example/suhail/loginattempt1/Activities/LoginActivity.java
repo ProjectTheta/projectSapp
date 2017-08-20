@@ -46,7 +46,7 @@ public class LoginActivity extends AppCompatActivity  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        sessionHelper = new SessionHelper(c);
+        sessionHelper = new SessionHelper(LoginActivity.this);
 
 
 
@@ -112,7 +112,7 @@ public class LoginActivity extends AppCompatActivity  {
                 if (login_results == null) {
                     Toast.makeText(c, "Server Error", Toast.LENGTH_SHORT).show();
                 } else {
-                    Log.d(TAG, "onResponse: Got the response: " + login_results.getMessage());
+                    Log.d(TAG, "onResponse: Got the response: " + login_results.getStatus());
                     if (login_results.getStatus() == 1) {
                         handleresponse(login_results.getContact(), login_results.getSid());
                     } else {

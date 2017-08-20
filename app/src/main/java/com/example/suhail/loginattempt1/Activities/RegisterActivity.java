@@ -254,9 +254,7 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
 
-    /*----------------------------------------------------------------------------------------------------
-      methods to handle stream
-     */
+
     void addStream(String str) {
         Stream = str;
 
@@ -268,9 +266,6 @@ public class RegisterActivity extends AppCompatActivity {
         }
 
     }
-    /*
---------------------------------------------------------------------------------------------------
-     */
 
 
     /**
@@ -310,9 +305,6 @@ public class RegisterActivity extends AppCompatActivity {
 
                 student_class = classList.get(position);
 
-                /*
-                to handle radiobuttons
-                 */
                 if (position == 10 || position == 11) {
                     SetUpStreamCheckBox();
                     setUpText(1);
