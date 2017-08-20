@@ -41,7 +41,7 @@ public class SessionHelper extends LoginActivity {
     public SessionHelper(Context context) {
         this.context = context;
         sharedPreferences= PreferenceManager.getDefaultSharedPreferences(context);
-        editor =sharedPreferences.edit();
+        editor = sharedPreferences.edit();
     }
 
     /**

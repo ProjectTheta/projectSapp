@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,6 +38,7 @@ public class LoginActivity extends AppCompatActivity  {
     TextView registerStudent;
     EditText contact;
     EditText password;
+    ProgressBar progressBar;
     Button bt_signin;
     SessionHelper sessionHelper;
 
@@ -55,11 +57,14 @@ public class LoginActivity extends AppCompatActivity  {
 
         bt_signin = (Button) findViewById(R.id.sign_in_button);
 
+
+
         bt_signin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String stud_contact = contact.getText().toString();
                 String stud_password = password.getText().toString();
+
                 LoginAttempt(stud_contact, stud_password);
             }
         });

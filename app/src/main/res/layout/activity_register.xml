@@ -166,7 +166,7 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="22dp"
-                    android:background="@color/colorPrimaryDark"
+                    android:background="@drawable/ripple_effect"
                     android:text="Register Me"
                     android:textAllCaps="false"
                     android:textColor="#fff"

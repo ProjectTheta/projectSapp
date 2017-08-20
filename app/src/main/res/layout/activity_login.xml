@@ -47,7 +47,7 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:drawableLeft="@mipmap/user"
-                    android:hint="contact"
+                    android:hint="Contact"
                     android:inputType="phone"
                     android:singleLine="true" />
             </android.support.design.widget.TextInputLayout>
@@ -82,7 +82,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="22dp"
-                android:background="@color/colorPrimaryDark"
+                android:background="@drawable/ripple_effect"
                 android:text="Sign in"
                 android:textAllCaps="false"
                 android:textColor="#fff"
@@ -109,4 +109,6 @@
         android:background="@mipmap/loginschool"
         android:elevation="4dp"
        />
+
 </RelativeLayout>
+
