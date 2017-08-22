@@ -5,6 +5,10 @@
     <color name="colorAccent">#FF4081</color>
     <color name="login_button">#d67601</color>
     <color name="text_view_color">#2a0c78</color>
+    <color name="white">#ffffff</color>
     <color name="alert_color">#ff0000</color>
+    <color name="selector">#672488</color>
     <color name="black">#000000</color>
+
+
 </resources>

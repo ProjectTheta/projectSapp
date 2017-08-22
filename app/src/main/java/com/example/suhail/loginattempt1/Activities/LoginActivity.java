@@ -38,7 +38,6 @@ public class LoginActivity extends AppCompatActivity  {
     TextView registerStudent;
     EditText contact;
     EditText password;
-    ProgressBar progressBar;
     Button bt_signin;
     SessionHelper sessionHelper;
 
