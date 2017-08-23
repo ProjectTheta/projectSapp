@@ -27,7 +27,7 @@ public interface ApiInterface {
 
 
     @POST("attempt/login")
-    Call<ResponseForRegistrattion> doLogin(@Body LoginStudent loginStudent);
+    Call<LoginResponse> doLogin(@Body LoginStudent loginStudent);
 
     @POST("create/student")
     Call<ResponseForRegistrattion> createStudent(@Body RegisterStudent registerStudent);

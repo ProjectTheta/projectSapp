@@ -116,7 +116,7 @@ public class LoginActivity extends AppCompatActivity {
 
                 String stud_contact = contact.getText().toString();
                 String stud_password = password.getText().toString();
-                Toast.makeText(c, "Just a moment", Toast.LENGTH_SHORT).show();
+                Toast.makeText(c, "Just a moment", Toast.LENGTH_LONG).show();
                 LoginAttempt(stud_contact, stud_password);
             }
         });
@@ -249,14 +249,14 @@ public class LoginActivity extends AppCompatActivity {
         Retrofit retrofit = ApiClient.getClient();
         ApiInterface apiInterface = retrofit.create(ApiInterface.class);
         LoginStudent student = new LoginStudent(contact, password);
-        Call<ResponseForRegistrattion> call = apiInterface.doLogin(student);
-        call.enqueue(new Callback<ResponseForRegistrattion>() {
+        Call<LoginResponse> call = apiInterface.doLogin(student);
+        call.enqueue(new Callback<LoginResponse>() {
 
             @Override
-            public void onResponse(Call<ResponseForRegistrattion> call, Response<ResponseForRegistrattion> response) {
+            public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
                 Log.d(TAG, "onResponse: Response parsing");
 
-                ResponseForRegistrattion login_results = response.body();
+                LoginResponse login_results = response.body();
 
                 if (login_results == null) {
                     Toast.makeText(c, "Server Error", Toast.LENGTH_SHORT).show();
@@ -264,13 +264,13 @@ public class LoginActivity extends AppCompatActivity {
                     Log.d(TAG, "onResponse: Got the response: " + login_results.getStatus());
                     if (login_results.getStatus() == 1) {
                         handleresponse(login_results.getContact(), login_results.getSid());
-                    } else if (login_results.getStatus() == 2) {
+                    } else if (login_results.getCode() == 3) {
                         setUpTextForWrongField(1);
                         Log.d("Response received", "Wrong Conatct");
-                    } else if (login_results.getStatus() == 3) {
+                    } else if (login_results.getCode() == 2) {
                         setUpTextForWrongField(2);
                         Log.d("Response received", "Wrong Password");
-                    } else if (login_results.getStatus() == 0) {
+                    } else if (login_results.getCode() == 4) {
                         setUpTextForWrongField(0);
                         Log.d("Response received", "Wrong Password");
                     }
@@ -278,7 +278,7 @@ public class LoginActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<ResponseForRegistrattion> call, Throwable t) {
+            public void onFailure(Call<LoginResponse> call, Throwable t) {
 
                 Log.d(TAG, "onFailure: Something went wrong: " + t.toString());
 
