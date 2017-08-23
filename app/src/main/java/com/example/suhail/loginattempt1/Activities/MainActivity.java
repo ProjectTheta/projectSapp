@@ -2,6 +2,8 @@ package com.example.suhail.loginattempt1.Activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.FragmentManager;
@@ -27,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
     SessionHelper sessionHelper;
     FragmentManager fragmentManager = getSupportFragmentManager();
     BottomNavigationView bottomNavigationView;
-
+  int i=0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,5 +97,27 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    boolean doubleBackToExitPressedOnce = false;
+
+    @Override
+    public void onBackPressed() {
+        if (doubleBackToExitPressedOnce) {
+
+            finish();
+            System.exit(0);
+            return;
+        }
+
+        this.doubleBackToExitPressedOnce = true;
+        Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show();
+
+        new Handler().postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+                doubleBackToExitPressedOnce=false;
+            }
+        }, 2000);
+    }
 
 }

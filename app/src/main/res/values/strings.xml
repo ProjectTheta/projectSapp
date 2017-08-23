@@ -14,5 +14,5 @@
     <string name="invalid_phone_no">*Please enter a valid phone number*</string>
     <string name="incorrect_password">*Incorrect Password*</string>
     <string name="server_error">*server error, please try again*</string>
-    <string name="small_pass">*Password must be 5 digit long*</string>
+    <string name="small_pass">*Password must be 5 digits long*</string>
 </resources>

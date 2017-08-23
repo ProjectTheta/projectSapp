@@ -97,6 +97,8 @@ public class LoginActivity extends AppCompatActivity {
         bt_signin.setEnabled(false);
         bt_signin.setBackgroundColor(getResources().getColor(R.color.grey));
 //------------------------------------------------------------------------------------
+
+
     }
     //-------------Oncreate Ends Her-------------------------------------------------------------------------
 
@@ -138,72 +140,84 @@ public class LoginActivity extends AppCompatActivity {
 
     void contactListner() {
 
-        contact.setOnKeyListener(
 
-                new View.OnKeyListener() {
+        contact.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-                    @Override
+            }
 
-                    public boolean onKey(View v, int keyCode, KeyEvent event) {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                int f1 = contact.length();
+                if (f1 != 10) {
+                    setUpTextForWrongField(3);
+                    contactistrue = 0;
+                } else {
 
-                        int f1 = contact.getText().length();
-                        if (f1 != 10) {
-                            setUpTextForWrongField(3);
-                            contactistrue = 0;
-                        } else {
-
-                            setUpTextForWrongField(4);
-                            contactistrue = 1;
-                        }
-
-                        if (passwordistrue == 1 && contactistrue == 1) {
-
-                            bt_signin.setEnabled(true);
-                            bt_signin.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-
-                        } else if (passwordistrue == 0 || contactistrue == 0) {
-                            bt_signin.setEnabled(false);
-                            bt_signin.setBackgroundColor(getResources().getColor(R.color.grey));
-
-                        }
-
-                        return false;
-                    }
+                    setUpTextForWrongField(4);
+                    contactistrue = 1;
                 }
-        );
 
-        password.setOnKeyListener(
-                new View.OnKeyListener() {
-                    @Override
-                    public boolean onKey(View v, int keyCode, KeyEvent event) {
-                        int f2 = password.getText().length();
+                if (passwordistrue == 1 && contactistrue == 1) {
 
+                    bt_signin.setEnabled(true);
+                    bt_signin.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
 
+                } else if (passwordistrue == 0 || contactistrue == 0) {
+                    bt_signin.setEnabled(false);
+                    bt_signin.setBackgroundColor(getResources().getColor(R.color.grey));
 
-                        if (f2 < 5) {
-                            passwordistrue = 0;
-                            setUpTextForWrongField(5);
-                        } else {
-                            passwordistrue = 1;
-                            setUpTextForWrongField(6);
-                        }
-
-                        if (passwordistrue == 1 && contactistrue == 1) {
-
-                            bt_signin.setEnabled(true);
-                            bt_signin.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-
-                        } else if (passwordistrue == 0 || contactistrue == 0) {
-                            bt_signin.setEnabled(false);
-                            bt_signin.setBackgroundColor(getResources().getColor(R.color.grey));
-
-                        }
-
-
-                        return false;
-                    }
                 }
-        );
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+
+
+            }
+        });
+
+       password.addTextChangedListener(new TextWatcher() {
+           @Override
+           public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+           }
+
+           @Override
+           public void onTextChanged(CharSequence s, int start, int before, int count) {
+               int f2 = password.getText().length();
+
+
+
+               if (f2 < 5) {
+                   passwordistrue = 0;
+                   setUpTextForWrongField(5);
+               } else {
+                   passwordistrue = 1;
+                   setUpTextForWrongField(6);
+               }
+
+               if (passwordistrue == 1 && contactistrue == 1) {
+
+                   bt_signin.setEnabled(true);
+                   bt_signin.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+
+               } else if (passwordistrue == 0 || contactistrue == 0) {
+                   bt_signin.setEnabled(false);
+                   bt_signin.setBackgroundColor(getResources().getColor(R.color.grey));
+
+               }
+
+           }
+
+           @Override
+           public void afterTextChanged(Editable s) {
+
+           }
+       });
+
 
 
     }
