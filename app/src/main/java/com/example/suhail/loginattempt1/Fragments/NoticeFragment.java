@@ -15,14 +15,6 @@ import com.example.suhail.loginattempt1.R;
 import com.example.suhail.loginattempt1.Utils.SessionHelper;
 
 
-public class NoticeFragment extends Fragment {
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_notice, container, false);
-    }
 
     public class NoticeFragment extends Fragment {
         Button logout;
@@ -66,4 +58,4 @@ public class NoticeFragment extends Fragment {
 
 
     }
-}
+

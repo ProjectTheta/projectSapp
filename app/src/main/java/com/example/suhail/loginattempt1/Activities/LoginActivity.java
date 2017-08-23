@@ -4,7 +4,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.InputFilter;
+import android.text.Selection;
+import android.text.Spanned;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -30,16 +36,24 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 //Test Commit
-public class LoginActivity extends AppCompatActivity  {
+public class LoginActivity extends AppCompatActivity {
 
 
+    /*
+    Declarations
+     */
     private static final String TAG = "LoginActivity";
+    TextView incorrect_contact;
+    TextView incorrect_password;
     Context c = LoginActivity.this;
     TextView registerStudent;
     EditText contact;
     EditText password;
     Button bt_signin;
     SessionHelper sessionHelper;
+    int contactistrue = 0;
+    int passwordistrue = 0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,30 +61,63 @@ public class LoginActivity extends AppCompatActivity  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+
+        /*
+        Initializing session helper
+         */
         sessionHelper = new SessionHelper(LoginActivity.this);
 
 
 
+        /*
+        Inflating Views
+         */
         contact = (EditText) findViewById(R.id.login_contact);
         password = (EditText) findViewById(R.id.login_password);
-
         bt_signin = (Button) findViewById(R.id.sign_in_button);
 
+
+       /*
+       Checking for previous session
+        */
+        checksharedpreferences();
+
+
+
+
+        /*
+        click listeners
+         */
+        signInButtonListner();
+        registerbuttonclicklistner();
+        contactListner();
+
+
+//------------------------------------------------------------------------------------
+        bt_signin.setEnabled(false);
+        bt_signin.setBackgroundColor(getResources().getColor(R.color.grey));
+//------------------------------------------------------------------------------------
+    }
+    //-------------Oncreate Ends Her-------------------------------------------------------------------------
+
+
+    /*
+    --------------------------------------------------------------  listeners Start------------------------------------------------
+
+     */
+    private void signInButtonListner() {
 
 
         bt_signin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 String stud_contact = contact.getText().toString();
                 String stud_password = password.getText().toString();
-
+                Toast.makeText(c, "Just a moment", Toast.LENGTH_SHORT).show();
                 LoginAttempt(stud_contact, stud_password);
             }
         });
-        checksharedpreferences();
-
-        registerbuttonclicklistner();
-
     }
 
     private void registerbuttonclicklistner() {
@@ -80,7 +127,7 @@ public class LoginActivity extends AppCompatActivity  {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        startActivity(new Intent(LoginActivity.this,RegisterActivity.class));
+                        startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
 
                     }
                 }
@@ -88,15 +135,99 @@ public class LoginActivity extends AppCompatActivity  {
 
     }
 
+
+    void contactListner() {
+
+        contact.setOnKeyListener(
+
+                new View.OnKeyListener() {
+
+                    @Override
+
+                    public boolean onKey(View v, int keyCode, KeyEvent event) {
+
+                        int f1 = contact.getText().length();
+                        if (f1 != 10) {
+                            setUpTextForWrongField(3);
+                            contactistrue = 0;
+                        } else {
+
+                            setUpTextForWrongField(4);
+                            contactistrue = 1;
+                        }
+
+                        if (passwordistrue == 1 && contactistrue == 1) {
+
+                            bt_signin.setEnabled(true);
+                            bt_signin.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+
+                        } else if (passwordistrue == 0 || contactistrue == 0) {
+                            bt_signin.setEnabled(false);
+                            bt_signin.setBackgroundColor(getResources().getColor(R.color.grey));
+
+                        }
+
+                        return false;
+                    }
+                }
+        );
+
+        password.setOnKeyListener(
+                new View.OnKeyListener() {
+                    @Override
+                    public boolean onKey(View v, int keyCode, KeyEvent event) {
+                        int f2 = password.getText().length();
+
+
+
+                        if (f2 < 5) {
+                            passwordistrue = 0;
+                            setUpTextForWrongField(5);
+                        } else {
+                            passwordistrue = 1;
+                            setUpTextForWrongField(6);
+                        }
+
+                        if (passwordistrue == 1 && contactistrue == 1) {
+
+                            bt_signin.setEnabled(true);
+                            bt_signin.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+
+                        } else if (passwordistrue == 0 || contactistrue == 0) {
+                            bt_signin.setEnabled(false);
+                            bt_signin.setBackgroundColor(getResources().getColor(R.color.grey));
+
+                        }
+
+
+                        return false;
+                    }
+                }
+        );
+
+
+    }
+//------------------------------------------------------Listners End-----------------------------------------------------------
+
+
+
+
+
+
     private void checksharedpreferences() {
         Log.d(TAG, "checksharedpreferences: Chcking Shared Preferences");
         boolean isLoggedIn = sessionHelper.isLoggedIn();
         if (isLoggedIn) {
-            Log.d("inside if","launching activity");
+            Log.d("inside if", "launching activity");
             startActivity(new Intent(c, MainActivity.class));
             finish();
         }
     }
+
+
+
+    //-----------------------------------------------API CALL-----------------------------------------------------------------
+
 
     public void LoginAttempt(String contact, String password) {
 
@@ -119,8 +250,15 @@ public class LoginActivity extends AppCompatActivity  {
                     Log.d(TAG, "onResponse: Got the response: " + login_results.getStatus());
                     if (login_results.getStatus() == 1) {
                         handleresponse(login_results.getContact(), login_results.getSid());
-                    } else {
-                        Toast.makeText(LoginActivity.this, "Some error", Toast.LENGTH_SHORT).show();
+                    } else if (login_results.getStatus() == 2) {
+                        setUpTextForWrongField(1);
+                        Log.d("Response received", "Wrong Conatct");
+                    } else if (login_results.getStatus() == 3) {
+                        setUpTextForWrongField(2);
+                        Log.d("Response received", "Wrong Password");
+                    } else if (login_results.getStatus() == 0) {
+                        setUpTextForWrongField(0);
+                        Log.d("Response received", "Wrong Password");
                     }
                 }
             }
@@ -134,6 +272,9 @@ public class LoginActivity extends AppCompatActivity  {
         });
 
     }
+//--------------------------------------------------------------------------------------------------------------------------------
+
+
 
 
     public void handleresponse(String contact, String sid) {
@@ -142,7 +283,68 @@ public class LoginActivity extends AppCompatActivity  {
         sessionHelper.createLoginSession(contact, sid);
         startActivity(new Intent(LoginActivity.this, MainActivity.class));
 
+       }
+
+
+
+
+       /*
+       Setup text for wrong field
+        */
+       public void setUpTextForWrongField(int id) {
+        incorrect_contact = (TextView) findViewById(R.id.wrong_contact);
+        incorrect_password = (TextView) findViewById(R.id.wrong_password);
+        if (id == 1) {
+
+            incorrect_contact.setText(R.string.incorrect_contact);
+        } else if (id == 2)
+
+        {
+
+
+            incorrect_password.setText(R.string.incorrect_password);
+
+
+        } else if (id == 3) {
+
+
+            incorrect_contact.setText(R.string.invalid_phone_no);
+
+
+        } else if (id == 4) {
+
+
+            incorrect_contact.setText(null);
+
+
+        } else if (id == 5) {
+
+
+            incorrect_password.setText(R.string.small_pass);
+
+
+        } else if (id == 0) {
+
+
+            Toast.makeText(c, R.string.server_error, Toast.LENGTH_SHORT).show();
+
+
+        } else if (id == 6) {
+
+
+            incorrect_password.setText(null);
+
+
+        } else {
+
+            Log.d("In'setUpTextForWrongField'", "Id recived is other than 1or 2");
+        }
+
     }
 
 
 }
+
+
+//-----------------------------------------end !!
+
