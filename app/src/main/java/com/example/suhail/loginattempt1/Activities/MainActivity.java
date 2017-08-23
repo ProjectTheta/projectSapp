@@ -23,7 +23,7 @@ import com.example.suhail.loginattempt1.Utils.SessionHelper;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
-    Context c;
+    Context c=MainActivity.this;
     SessionHelper sessionHelper;
     FragmentManager fragmentManager = getSupportFragmentManager();
     BottomNavigationView bottomNavigationView;

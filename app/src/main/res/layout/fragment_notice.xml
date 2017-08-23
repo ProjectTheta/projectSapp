@@ -10,4 +10,10 @@
         android:layout_height="match_parent"
         android:text="In Notice Fragment" />
 
+    <Button
+        android:id="@+id/logou"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="logout" />
+
 </FrameLayout>
