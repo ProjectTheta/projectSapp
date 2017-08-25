@@ -1,34 +1,30 @@
 package com.example.suhail.loginattempt1.Activities;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
-import android.text.InputFilter;
-import android.text.Selection;
-import android.text.Spanned;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.suhail.loginattempt1.ApiClient.ApiClient;
 import com.example.suhail.loginattempt1.Interfaces.ApiInterface;
 import com.example.suhail.loginattempt1.Models.LoginStudent;
-import com.example.suhail.loginattempt1.Models.ResponseForRegistrattion;
 import com.example.suhail.loginattempt1.R;
 import com.example.suhail.loginattempt1.Models.LoginResponse;
 import com.example.suhail.loginattempt1.Utils.SessionHelper;
 
 
-import java.util.HashMap;
-import java.util.Map;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -42,6 +38,7 @@ public class LoginActivity extends AppCompatActivity {
     /*
     Declarations
      */
+    private ProgressDialog mProgress;
     private static final String TAG = "LoginActivity";
     TextView incorrect_contact;
     TextView incorrect_password;
@@ -61,6 +58,15 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+
+        /*
+        progress bar for login
+         */
+        mProgress = new ProgressDialog(LoginActivity.this);
+        mProgress.setTitle("Logging you in...");
+        mProgress.setMessage("Please wait...");
+        mProgress.setCancelable(false);
+        mProgress.setIndeterminate(true);
 
         /*
         Initializing session helper
@@ -99,9 +105,29 @@ public class LoginActivity extends AppCompatActivity {
 //------------------------------------------------------------------------------------
 
 
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+
+        StrictMode.setThreadPolicy(policy);
+
     }
     //-------------Oncreate Ends Her-------------------------------------------------------------------------
 
+
+
+
+    /*
+    check for connection
+     */
+
+    public boolean isInternetAvailable() {
+        try {
+            final InetAddress address = InetAddress.getByName("www.google.com");
+            return !address.equals("");
+        } catch (UnknownHostException e) {
+            // Log error
+        }
+        return false;
+    }
 
     /*
     --------------------------------------------------------------  listeners Start------------------------------------------------
@@ -114,10 +140,20 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
+                mProgress.show();
                 String stud_contact = contact.getText().toString();
                 String stud_password = password.getText().toString();
-                Toast.makeText(c, "Just a moment", Toast.LENGTH_LONG).show();
-                LoginAttempt(stud_contact, stud_password);
+
+                if(isInternetAvailable()==true)
+                {
+                    LoginAttempt(stud_contact, stud_password);
+                }else
+                {
+
+                    mProgress.dismiss();
+                    Toast.makeText(c, "No Internet", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(c, "Please connect to a network", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
@@ -259,6 +295,12 @@ public class LoginActivity extends AppCompatActivity {
                 LoginResponse login_results = response.body();
 
                 if (login_results == null) {
+
+                    /*
+                    dismiss progress bar
+                    */
+                    mProgress.dismiss();
+
                     Toast.makeText(c, "Server Error", Toast.LENGTH_SHORT).show();
                 } else {
                     Log.d(TAG, "onResponse: Got the response: " + login_results.getStatus());
@@ -295,6 +337,7 @@ public class LoginActivity extends AppCompatActivity {
 
         Log.d(TAG, "handleresponse: Handling the Response");
         sessionHelper.createLoginSession(contact, sid);
+        mProgress.dismiss();
         startActivity(new Intent(LoginActivity.this, MainActivity.class));
 
        }
@@ -306,8 +349,15 @@ public class LoginActivity extends AppCompatActivity {
        Setup text for wrong field
         */
        public void setUpTextForWrongField(int id) {
-        incorrect_contact = (TextView) findViewById(R.id.wrong_contact);
-        incorrect_password = (TextView) findViewById(R.id.wrong_password);
+
+           /*
+           dismiss progress bar
+            */
+           mProgress.dismiss();
+
+
+           incorrect_contact = (TextView) findViewById(R.id.wrong_contact);
+           incorrect_password = (TextView) findViewById(R.id.wrong_password);
         if (id == 1) {
 
             incorrect_contact.setText(R.string.incorrect_contact);
@@ -322,7 +372,7 @@ public class LoginActivity extends AppCompatActivity {
         } else if (id == 3) {
 
 
-            incorrect_contact.setText(R.string.invalid_phone_no);
+            incorrect_contact.setText(R.string.wrong_phone_no);
 
 
         } else if (id == 4) {

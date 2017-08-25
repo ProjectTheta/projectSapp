@@ -8,14 +8,10 @@ package com.example.suhail.loginattempt1.Interfaces;
 import com.example.suhail.loginattempt1.Models.LoginResponse;
 import com.example.suhail.loginattempt1.Models.LoginStudent;
 import com.example.suhail.loginattempt1.Models.RegisterStudent;
-import com.example.suhail.loginattempt1.Models.ResponseForRegistrattion;
-
-import java.util.Map;
+import com.example.suhail.loginattempt1.Models.ResponseForRegistration;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
-import retrofit2.http.FieldMap;
-import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.POST;
 
 
@@ -30,7 +26,7 @@ public interface ApiInterface {
     Call<LoginResponse> doLogin(@Body LoginStudent loginStudent);
 
     @POST("create/student")
-    Call<ResponseForRegistrattion> createStudent(@Body RegisterStudent registerStudent);
+    Call<ResponseForRegistration> createStudent(@Body RegisterStudent registerStudent);
 
 }
 
