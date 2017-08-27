@@ -221,8 +221,7 @@ public class RegisterActivity extends AppCompatActivity {
                     registerStudent();
                 } else {
                     mProgress.dismiss();
-                    Toast.makeText(c, "No Internet", Toast.LENGTH_SHORT).show();
-                    Toast.makeText(c, "Please connect to a network", Toast.LENGTH_SHORT).show();
+                    showalert("No Internet Connection ");
                 }
             }
         });
@@ -384,7 +383,8 @@ public class RegisterActivity extends AppCompatActivity {
                 mProgress.dismiss();
                 ResponseForRegistration responseForRegistration = response.body();
                 if (responseForRegistration == null) {
-                    Toast.makeText(RegisterActivity.this,response.message()+"Error Code"+response.code(), Toast.LENGTH_SHORT).show();
+                    showalert(response.message()+", code :"+response.code());
+
                     Toast.makeText(RegisterActivity.this, "Server error try again later!!!!", Toast.LENGTH_SHORT).show();
 
                 } else {
@@ -801,7 +801,7 @@ public class RegisterActivity extends AppCompatActivity {
         builder1.setCancelable(true);
 
         builder1.setPositiveButton(
-                "Yes",
+                "Close",
                 new DialogInterface.OnClickListener()
 
                 {
@@ -810,15 +810,6 @@ public class RegisterActivity extends AppCompatActivity {
                     }
                 });
 
-        builder1.setNegativeButton(
-                "No",
-                new DialogInterface.OnClickListener()
-
-                {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
-                    }
-                });
 
         AlertDialog alert11 = builder1.create();
         alert11.show();

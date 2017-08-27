@@ -2,8 +2,10 @@ package com.example.suhail.loginattempt1.Activities;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.StrictMode;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -151,8 +153,8 @@ public class LoginActivity extends AppCompatActivity {
                 {
 
                     mProgress.dismiss();
-                    Toast.makeText(c, "No Internet", Toast.LENGTH_SHORT).show();
-                    Toast.makeText(c, "Please connect to a network", Toast.LENGTH_SHORT).show();
+                    showalert("No Internet Connection ");
+
                 }
             }
         });
@@ -407,8 +409,30 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
+
+
+    void showalert(String text) {
+
+
+        AlertDialog.Builder builder1 = new AlertDialog.Builder(LoginActivity.this);
+        builder1.setMessage(text);
+        builder1.setCancelable(true);
+
+        builder1.setPositiveButton(
+                "Close",
+                new DialogInterface.OnClickListener()
+
+                {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+
+
+        AlertDialog alert11 = builder1.create();
+        alert11.show();
+
+    }
 }
-
-
 //-----------------------------------------end !!
 
