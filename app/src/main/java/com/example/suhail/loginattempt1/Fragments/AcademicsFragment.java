@@ -4,6 +4,7 @@ package com.example.suhail.loginattempt1.Fragments;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +28,14 @@ public class AcademicsFragment extends Fragment {
         // Required empty public constructor
     }
 
+    @Override
+    public void onDestroyView() {
+
+
+        super.onDestroyView();
+
+        getActivity().getSupportFragmentManager().popBackStack();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

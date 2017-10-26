@@ -15,6 +15,14 @@ import com.example.suhail.loginattempt1.R;
 public class ResultFragment extends Fragment {
 
 
+    @Override
+    public void onDestroyView() {
+
+
+        super.onDestroyView();
+
+        getActivity().getSupportFragmentManager().popBackStack();
+    }
     public ResultFragment() {
         // Required empty public constructor
     }

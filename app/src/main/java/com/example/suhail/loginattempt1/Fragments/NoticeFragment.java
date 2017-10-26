@@ -1,19 +1,24 @@
 package com.example.suhail.loginattempt1.Fragments;
 
+import android.app.ProgressDialog;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.example.suhail.loginattempt1.Activities.LoginActivity;
+import com.example.suhail.loginattempt1.Activities.MainActivity;
 import com.example.suhail.loginattempt1.Adapter.NoticeRecyclerViewAdapter;
 import com.example.suhail.loginattempt1.ApiClient.ApiClient;
 import com.example.suhail.loginattempt1.Interfaces.ApiInterface;
@@ -36,7 +41,18 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class NoticeFragment extends Fragment {
     Button logout;
+    private ProgressDialog mProgress;
 
+
+    @Override
+    public void onDestroyView() {
+
+
+        super.onDestroyView();
+
+
+        getActivity().getSupportFragmentManager().popBackStack();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -53,120 +69,146 @@ public class NoticeFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        mProgress = new ProgressDialog(getActivity());
+        mProgress.setTitle("Loading Data");
+        mProgress.setMessage("Please wait...");
+        mProgress.setCancelable(false);
+        mProgress.setIndeterminate(true);
+        mProgress.setCanceledOnTouchOutside(false);
 
-        final RecyclerView recyclerView = (RecyclerView) getActivity().findViewById(R.id.recyclerview_textnotice);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        if (isAdded()) {
+
+            mProgress.show();
+
+            ((MainActivity)getActivity()).enableBottomNav(false);
 
 
-        //<!----------------------------RETRIEVING PREVIOUSLY DOWNLOADED NOTICES -----------------------------------------------------------------------------
+            final RecyclerView recyclerView = (RecyclerView) getActivity().findViewById(R.id.recyclerview_textnotice);
+            recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
 
-      SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        Gson gson = new Gson();
-        String json = sharedPrefs.getString("notice_data", null);
-        Type type = new TypeToken<ArrayList<notice_info>>() {
-        }.getType();
-        ArrayList<notice_info> arrayList = gson.fromJson(json, type);
-        if (arrayList != null) {
+            //<!----------------------------RETRIEVING PREVIOUSLY DOWNLOADED NOTICES -----------------------------------------------------------------------------
 
-           Log.d("Retrieving Notice"," Previous Data collected") ;
 
-            recyclerView.setAdapter(new NoticeRecyclerViewAdapter(arrayList, R.layout.cardview, getActivity()));
+            SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            Gson gson = new Gson();
+            String json = sharedPrefs.getString("notice_data", null);
+            Type type = new TypeToken<ArrayList<notice_info>>() {
+            }.getType();
+            ArrayList<notice_info> arrayList = gson.fromJson(json, type);
+            if (arrayList != null) {
 
-        }
+                Log.d("Retrieving Notice", " Previous Data collected");
+
+                recyclerView.setAdapter(new NoticeRecyclerViewAdapter(arrayList, R.layout.cardview, getActivity()));
+                mProgress.dismiss();
+                ((MainActivity)getActivity()).enableBottomNav(true);
+
+
+            }
 
 //--------------------------------------------------------------------------------------------------------------------------!>
 
 
+            //<!------------------------API CALL FOR NEW NOTICES------------------------------------------------------------------
 
-      //<!------------------------API CALL FOR NEW NOTICES------------------------------------------------------------------
+            mProgress.show();
+            ((MainActivity)getActivity()).enableBottomNav(false);
 
-        ApiInterface apiservice = ApiClient.getClient().create(ApiInterface.class);
+            ApiInterface apiservice = ApiClient.getClient().create(ApiInterface.class);
 
-        String url="https://api.myjson.com/bins/9m7sf";    // dummy URL
+            String url = "https://api.myjson.com/bins/9m7sf";    // dummy URL
 
-        Call<List<notice_info>> call = apiservice.getnotice(url);
-
-
-        call.enqueue(new Callback<List<notice_info>>() {
-            @Override
-            public void onResponse(Call<List<notice_info>> call, Response<List<notice_info>> response) {
-
-                String message_code = response.message();
-                Log.d("Connection Status", "Successful");
-                Log.d("Response Code", message_code);
-                Toast.makeText(getActivity(), message_code, Toast.LENGTH_SHORT).show();
-
-                //--------------------!>>
-
-                List<notice_info> info_rec = response.body();
-
-                //<!------------------------------------------
-                //to avoid null point exception
-                if (info_rec == null) {
-                    Toast.makeText(getActivity(), "nothing received", Toast.LENGTH_SHORT).show();
-                    Log.d("Resonse", "Nothing Received");
-                    //-----------------------------------------------!>
+            Call<List<notice_info>> call = apiservice.getnotice(url);
 
 
-                } else {
+            call.enqueue(new Callback<List<notice_info>>() {
+                @Override
+                public void onResponse(Call<List<notice_info>> call, Response<List<notice_info>> response) {
 
-                    //<---------------------------------------------------Saving notices in memory----------------------------------------------------
+                    String message_code = response.message();
+                    Log.d("Connection Status", "Successful");
+                    Log.d("Response Code", message_code);
+                    Toast.makeText(getActivity(), message_code, Toast.LENGTH_SHORT).show();
 
+                    //--------------------!>>
 
-                    SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                    List<notice_info> info_rec = response.body();
 
-                    SharedPreferences.Editor editor = sharedPrefs.edit();
-                    Gson gson = new Gson();
-
-                    String json = gson.toJson(info_rec);
-
-                    editor.putString("notice_data", json);
-                    editor.commit();
-
-
-                    //-------------------------------------------------------------------------------------------------------
-
-
-                    //<!-----------------------------------------------------------------------
-                    //setting up recycler view adapter
-
-                   Toast.makeText(getActivity(), "No of objects received : " + info_rec.size(), Toast.LENGTH_SHORT).show();
+                    //<!------------------------------------------
+                    //to avoid null point exception
+                    if (info_rec == null) {
+                        Toast.makeText(getActivity(), "nothing received", Toast.LENGTH_SHORT).show();
+                        Log.d("Resonse", "Nothing Received");
+                        //-----------------------------------------------!>
 
 
+                    } else {
 
-                    recyclerView.setAdapter(new NoticeRecyclerViewAdapter(info_rec, R.layout.cardview, getActivity()));
-
-                    //--------------------------------------------------------------!>
-
-                }
+                        //<---------------------------------------------------Saving notices in memory----------------------------------------------------
 
 
-            }
+                        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
-            @Override
-            public void onFailure(Call<List<notice_info>> call, Throwable t) {
+                        SharedPreferences.Editor editor = sharedPrefs.edit();
+                        Gson gson = new Gson();
 
-            }
+                        String json = gson.toJson(info_rec);
 
-        });
+                        editor.putString("notice_data", json);
+                        editor.commit();
 
 
-        logout = (Button) getActivity().findViewById(R.id.logou);
-        logout.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Toast.makeText(getActivity(), "logging out", Toast.LENGTH_SHORT).show();
-                        logout();
+                        //-------------------------------------------------------------------------------------------------------
+
+
+                        //<!-----------------------------------------------------------------------
+                        //setting up recycler view adapter
+
+                        Toast.makeText(getActivity(), "No of objects received : " + info_rec.size(), Toast.LENGTH_SHORT).show();
+
+
+                        recyclerView.setAdapter(new NoticeRecyclerViewAdapter(info_rec, R.layout.cardview, getActivity()));
+
+                        //--------------------------------------------------------------!>
+                        mProgress.dismiss();
+                        ((MainActivity)getActivity()).enableBottomNav(true);
 
                     }
 
 
                 }
-        );
-    }
 
+                @Override
+                public void onFailure(Call<List<notice_info>> call, Throwable t) {
+                    mProgress.dismiss();
+                    ((MainActivity)getActivity()).enableBottomNav(true);
+
+                }
+
+
+
+
+            });
+
+
+            logout = (Button) getActivity().findViewById(R.id.logou);
+            logout.setOnClickListener(
+                    new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Toast.makeText(getActivity(), "logging out", Toast.LENGTH_SHORT).show();
+                            logout();
+
+                        }
+
+
+                    }
+            );
+        }
+
+    }
 
     void logout() {
         SessionHelper sessionHelper = new SessionHelper(getActivity());

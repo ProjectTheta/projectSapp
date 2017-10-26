@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -25,11 +26,12 @@ import com.example.suhail.loginattempt1.Utils.SessionHelper;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
-    Context c=MainActivity.this;
+    Context c = MainActivity.this;
     SessionHelper sessionHelper;
     FragmentManager fragmentManager = getSupportFragmentManager();
     BottomNavigationView bottomNavigationView;
-  int i=0;
+    int i = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,49 +50,111 @@ public class MainActivity extends AppCompatActivity {
         enableTransaction(bottomNavigationView);
 
 
-
     }
 
     private void checkSharedPreferences() {
-        if(!sessionHelper.isLoggedIn()) {
+        if (!sessionHelper.isLoggedIn()) {
             startActivity(new Intent(c, LoginActivity.class));
             finish();
         }
     }
 
+
+    public void enableBottomNav(Boolean b)
+    {
+        if(b)
+        {bottomNavigationView.setEnabled(true);}
+        else
+        {
+            bottomNavigationView.setEnabled(false);
+        }
+
+    }
+
+
+
     /**
      * Enabling the OnClickListeners
+     *
      * @param mNav
      */
 
     public void enableTransaction(BottomNavigationView mNav) {
 
+
         Log.d(TAG, "enableTransaction: Transaction Enabled");
         mNav.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+                Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.container);
+
+
                 switch (item.getItemId()) {
                     case R.id.ic_notice:
+
+
                         NoticeFragment noticeFragment = new NoticeFragment();
-                        fragmentTransaction.replace(R.id.container, noticeFragment).commit();
-                        return true;
+
+                        if (currentFragment == null)
+
+                        {
+                            Log.d("stsus", "nullfrgmnt");
+
+
+                            fragmentTransaction.replace(R.id.container, noticeFragment).commit();
+                            return true;
+
+
+                        }
+                        if (!(currentFragment instanceof NoticeFragment)) {
+
+
+                            Toast.makeText(c, currentFragment.getId(), Toast.LENGTH_SHORT).show();
+                            fragmentTransaction.replace(R.id.container, noticeFragment).commit();
+                            return true;
+                        } else {
+                            return false;
+                        }
+
 
                     case R.id.ic_academics:
                         AcademicsFragment academicsFragment = new AcademicsFragment();
-                        fragmentTransaction.replace(R.id.container, academicsFragment).commit();
-                        return true;
+                        if (!(currentFragment instanceof AcademicsFragment)) {
+                            fragmentTransaction.replace(R.id.container, academicsFragment).commit();
+                            return true;
+                        } else {
+                            return false;
+                        }
+
 
                     case R.id.ic_result:
                         ResultFragment resultFragment = new ResultFragment();
-                        fragmentTransaction.replace(R.id.container, resultFragment).commit();
-                        return true;
+                        if (!(currentFragment instanceof ResultFragment)) {
+                            fragmentTransaction.replace(R.id.container, resultFragment).commit();
+                            return true;
+                        } else {
+                            return false;
+                        }
 
                     case R.id.ic_account:
+
                         AccountFragment accountFragment = new AccountFragment();
-                        fragmentTransaction.replace(R.id.container, accountFragment).commit();
-                        return true;
+
+                        if (!(currentFragment instanceof AccountFragment)) {
+                            fragmentTransaction.replace(R.id.container, accountFragment).commit();
+
+                            return true;
+
+                        } else {
+                            return false;
+                        }
                 }
+
+
                 return false;
             }
         });
@@ -115,7 +179,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void run() {
-                doubleBackToExitPressedOnce=false;
+                doubleBackToExitPressedOnce = false;
             }
         }, 2000);
     }
