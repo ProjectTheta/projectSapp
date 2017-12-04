@@ -1,10 +1,14 @@
 package com.example.suhail.loginattempt1.Activities;
-
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.StrictMode;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -52,6 +56,7 @@ public class LoginActivity extends AppCompatActivity {
     SessionHelper sessionHelper;
     int contactistrue = 0;
     int passwordistrue = 0;
+    private static final int PERMISSION_REQUEST_CODE = 1;
 
 
     @Override
@@ -59,7 +64,10 @@ public class LoginActivity extends AppCompatActivity {
         Log.d(TAG, "onCreate: In on Create");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+        StrictMode.setVmPolicy(builder.build());
 
+     //   DownloadManagerClass downloadManager=new DownloadManagerClass(LoginActivity.this);
 
         /*
         progress bar for login
@@ -99,6 +107,10 @@ public class LoginActivity extends AppCompatActivity {
         signInButtonListner();
         registerbuttonclicklistner();
         contactListner();
+        isStoragePermissionGranted();
+        isStoragePermissionGrantedRead();
+
+
 
 
 //------------------------------------------------------------------------------------
@@ -114,6 +126,54 @@ public class LoginActivity extends AppCompatActivity {
     }
     //-------------Oncreate Ends Her-------------------------------------------------------------------------
 
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
+    public  boolean isStoragePermissionGranted() {
+        if (Build.VERSION.SDK_INT >= 23) {
+            if (checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    == PackageManager.PERMISSION_GRANTED) {
+                Log.v(TAG,"Permission is granted");
+                return true;
+            } else {
+
+                Log.v(TAG,"Permission is revoked");
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                return false;
+            }
+        }
+        else { //permission is automatically granted on sdk<23 upon installation
+            Log.v(TAG,"Permission is granted");
+            return true;
+        }
+    }
+
+    public  boolean isStoragePermissionGrantedRead() {
+        if (Build.VERSION.SDK_INT >= 23) {
+            if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+                    == PackageManager.PERMISSION_GRANTED) {
+                Log.v(TAG,"Permission is granted");
+                return true;
+            } else {
+
+                Log.v(TAG,"Permission is revoked");
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+                return false;
+            }
+        }
+        else { //permission is automatically granted on sdk<23 upon installation
+            Log.v(TAG,"Permission is granted");
+            return true;
+        }
+    }
 
 
 
@@ -350,6 +410,7 @@ public class LoginActivity extends AppCompatActivity {
        /*
        Setup text for wrong field
         */
+       @SuppressLint("LongLogTag")
        public void setUpTextForWrongField(int id) {
 
            /*

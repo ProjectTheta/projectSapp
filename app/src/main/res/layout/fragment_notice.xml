@@ -7,6 +7,16 @@
     tools:context="com.example.suhail.loginattempt1.Fragments.NoticeFragment">
 
     <!-- TODO: Update blank fragment layout -->
+
+    <include
+        android:id="@+id/appbar_notice"
+        layout="@layout/app_bar"
+
+
+        />
+
+
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerview_textnotice"
         android:layout_width="match_parent"
@@ -16,13 +26,11 @@
     </android.support.v7.widget.RecyclerView>
 
 
-
-
     <Button
 
         android:id="@+id/logou"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="logout" />
+        android:text="@string/logout" />
 
 </LinearLayout>

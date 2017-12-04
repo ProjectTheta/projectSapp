@@ -1,23 +1,62 @@
 package com.example.suhail.loginattempt1.Fragments;
 
+import android.app.DownloadManager;
 import android.app.ProgressDialog;
+import android.app.SearchManager;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.ParcelFileDescriptor;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.webkit.URLUtil;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.example.suhail.loginattempt1.Activities.LoginActivity;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+
+import android.app.Activity;
+import android.app.DownloadManager;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.os.Bundle;
+import android.os.ParcelFileDescriptor;
+import android.preference.PreferenceManager;
+import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
+import android.widget.Toolbar;
+
 import com.example.suhail.loginattempt1.Activities.MainActivity;
 import com.example.suhail.loginattempt1.Adapter.NoticeRecyclerViewAdapter;
 import com.example.suhail.loginattempt1.ApiClient.ApiClient;
@@ -28,6 +67,7 @@ import com.example.suhail.loginattempt1.Utils.SessionHelper;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import java.io.File;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,12 +76,12 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static android.content.Context.MODE_PRIVATE;
-
 
 public class NoticeFragment extends Fragment {
     Button logout;
     private ProgressDialog mProgress;
+    android.support.v7.widget.Toolbar toolbar;
+    NoticeRecyclerViewAdapter noticeRecyclerViewAdapter;
 
 
     @Override
@@ -59,15 +99,70 @@ public class NoticeFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
-
+        setHasOptionsMenu(true);
         return inflater.inflate(R.layout.fragment_notice, container, false);
 
+
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+
+
+    }
+
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+
+        menu.clear();
+        getActivity().getMenuInflater().inflate(R.menu.app_bar, menu);
+
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.notice_search));
+
+
+        search(searchView);
+
+
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+
+    private void search(SearchView searchView) {
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+
+                if (newText != null) {
+                    noticeRecyclerViewAdapter.getFilter().filter(newText);
+                }
+                return true;
+            }
+        });
     }
 
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+//------------------------------------------------------Toolbar-
+
+        toolbar = (android.support.v7.widget.Toolbar) getActivity().findViewById(R.id.appbar_notice);
+        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setHomeButtonEnabled(true);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Notice");
+
+        //----------------------------------------------
+
 
         mProgress = new ProgressDialog(getActivity());
         mProgress.setTitle("Loading Data");
@@ -81,7 +176,7 @@ public class NoticeFragment extends Fragment {
 
             mProgress.show();
 
-            ((MainActivity)getActivity()).enableBottomNav(false);
+            ((MainActivity) getActivity()).enableBottomNav(false);
 
 
             final RecyclerView recyclerView = (RecyclerView) getActivity().findViewById(R.id.recyclerview_textnotice);
@@ -103,7 +198,7 @@ public class NoticeFragment extends Fragment {
 
                 recyclerView.setAdapter(new NoticeRecyclerViewAdapter(arrayList, R.layout.cardview, getActivity()));
                 mProgress.dismiss();
-                ((MainActivity)getActivity()).enableBottomNav(true);
+                ((MainActivity) getActivity()).enableBottomNav(true);
 
 
             }
@@ -114,11 +209,11 @@ public class NoticeFragment extends Fragment {
             //<!------------------------API CALL FOR NEW NOTICES------------------------------------------------------------------
 
             mProgress.show();
-            ((MainActivity)getActivity()).enableBottomNav(false);
+            ((MainActivity) getActivity()).enableBottomNav(false);
 
             ApiInterface apiservice = ApiClient.getClient().create(ApiInterface.class);
 
-            String url = "https://api.myjson.com/bins/9m7sf";    // dummy URL
+            String url = "https://api.myjson.com/bins/15xp7f";    // dummy URL
 
             Call<List<notice_info>> call = apiservice.getnotice(url);
 
@@ -130,7 +225,7 @@ public class NoticeFragment extends Fragment {
                     String message_code = response.message();
                     Log.d("Connection Status", "Successful");
                     Log.d("Response Code", message_code);
-                    Toast.makeText(getActivity(), message_code, Toast.LENGTH_SHORT).show();
+                  //  Toast.makeText(getActivity(), message_code, Toast.LENGTH_SHORT).show();
 
                     //--------------------!>>
 
@@ -166,14 +261,15 @@ public class NoticeFragment extends Fragment {
                         //<!-----------------------------------------------------------------------
                         //setting up recycler view adapter
 
-                        Toast.makeText(getActivity(), "No of objects received : " + info_rec.size(), Toast.LENGTH_SHORT).show();
+                        String Noofobjectsreceived ="No of objects received : " + info_rec.size();
+                        Log.d("No of objects received",Noofobjectsreceived);
 
-
-                        recyclerView.setAdapter(new NoticeRecyclerViewAdapter(info_rec, R.layout.cardview, getActivity()));
+                        noticeRecyclerViewAdapter = new NoticeRecyclerViewAdapter(info_rec, R.layout.cardview, getActivity());
+                        recyclerView.setAdapter(noticeRecyclerViewAdapter);
 
                         //--------------------------------------------------------------!>
                         mProgress.dismiss();
-                        ((MainActivity)getActivity()).enableBottomNav(true);
+                        ((MainActivity) getActivity()).enableBottomNav(true);
 
                     }
 
@@ -183,11 +279,9 @@ public class NoticeFragment extends Fragment {
                 @Override
                 public void onFailure(Call<List<notice_info>> call, Throwable t) {
                     mProgress.dismiss();
-                    ((MainActivity)getActivity()).enableBottomNav(true);
+                    ((MainActivity) getActivity()).enableBottomNav(true);
 
                 }
-
-
 
 
             });
@@ -206,6 +300,8 @@ public class NoticeFragment extends Fragment {
 
                     }
             );
+
+
         }
 
     }
@@ -218,4 +314,12 @@ public class NoticeFragment extends Fragment {
 
 
 }
+
+
+
+
+
+
+
+
 

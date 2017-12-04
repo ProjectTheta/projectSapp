@@ -3,6 +3,7 @@ package com.example.suhail.loginattempt1.Activities;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
+import android.os.StrictMode;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -15,6 +16,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.example.suhail.loginattempt1.Adapter.NoticeRecyclerViewAdapter;
 import com.example.suhail.loginattempt1.Fragments.AcademicsFragment;
 import com.example.suhail.loginattempt1.Fragments.AccountFragment;
 import com.example.suhail.loginattempt1.Fragments.NoticeFragment;
@@ -42,12 +44,25 @@ public class MainActivity extends AppCompatActivity {
         checkSharedPreferences();
         bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_nav_bar);
 
+
+        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+        StrictMode.setVmPolicy(builder.build());
+
         /**
          * Setting up the Navigation Bar
          */
         BottomNavHelper.setUpNav(bottomNavigationView);
 
         enableTransaction(bottomNavigationView);
+
+
+        if (savedInstanceState == null) {
+            NoticeFragment noticeFragment=new NoticeFragment();
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .add(R.id.container, noticeFragment)
+                    .commit();
+        }
 
 
     }
