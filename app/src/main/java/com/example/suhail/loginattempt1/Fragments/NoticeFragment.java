@@ -32,7 +32,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.webkit.URLUtil;
 import android.widget.Button;
-import android.widget.Toast;
+
 
 
 import java.io.FileInputStream;
@@ -63,6 +63,7 @@ import com.example.suhail.loginattempt1.ApiClient.ApiClient;
 import com.example.suhail.loginattempt1.Interfaces.ApiInterface;
 import com.example.suhail.loginattempt1.Models.notice_info;
 import com.example.suhail.loginattempt1.R;
+import com.example.suhail.loginattempt1.Utils.DownloadManagerClass;
 import com.example.suhail.loginattempt1.Utils.SessionHelper;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -149,6 +150,12 @@ public class NoticeFragment extends Fragment {
         });
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        DownloadManagerClass downloadManagerClass=new DownloadManagerClass(getActivity());
+        downloadManagerClass.broadcast();
+    }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -311,6 +318,13 @@ public class NoticeFragment extends Fragment {
         sessionHelper.logOutUser();
 
     }
+
+
+
+
+
+
+
 
 
 }

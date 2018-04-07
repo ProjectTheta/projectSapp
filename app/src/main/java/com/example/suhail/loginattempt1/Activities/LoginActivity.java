@@ -1,4 +1,5 @@
 package com.example.suhail.loginattempt1.Activities;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
@@ -22,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.suhail.loginattempt1.ApiClient.ApiClient;
+import com.example.suhail.loginattempt1.Fragments.AccountFragment;
 import com.example.suhail.loginattempt1.Interfaces.ApiInterface;
 import com.example.suhail.loginattempt1.Models.LoginStudent;
 import com.example.suhail.loginattempt1.R;
@@ -30,8 +32,12 @@ import com.example.suhail.loginattempt1.Utils.SessionHelper;
 
 
 import java.net.InetAddress;
+import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
+import java.security.PublicKey;
+import java.util.concurrent.TimeUnit;
 
+import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -57,6 +63,8 @@ public class LoginActivity extends AppCompatActivity {
     int contactistrue = 0;
     int passwordistrue = 0;
     private static final int PERMISSION_REQUEST_CODE = 1;
+    public String User_Contact = "CONTACT";
+    String User_Contact_login = null;
 
 
     @Override
@@ -67,7 +75,10 @@ public class LoginActivity extends AppCompatActivity {
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
 
-     //   DownloadManagerClass downloadManager=new DownloadManagerClass(LoginActivity.this);
+
+
+
+        //   DownloadManagerClass downloadManager=new DownloadManagerClass(LoginActivity.this);
 
         /*
         progress bar for login
@@ -111,8 +122,6 @@ public class LoginActivity extends AppCompatActivity {
         isStoragePermissionGrantedRead();
 
 
-
-
 //------------------------------------------------------------------------------------
         bt_signin.setEnabled(false);
         bt_signin.setBackgroundColor(getResources().getColor(R.color.grey));
@@ -137,40 +146,38 @@ public class LoginActivity extends AppCompatActivity {
         super.onPause();
     }
 
-    public  boolean isStoragePermissionGranted() {
+    public boolean isStoragePermissionGranted() {
         if (Build.VERSION.SDK_INT >= 23) {
             if (checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
                     == PackageManager.PERMISSION_GRANTED) {
-                Log.v(TAG,"Permission is granted");
+                Log.v(TAG, "Permission is granted");
                 return true;
             } else {
 
-                Log.v(TAG,"Permission is revoked");
+                Log.v(TAG, "Permission is revoked");
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
                 return false;
             }
-        }
-        else { //permission is automatically granted on sdk<23 upon installation
-            Log.v(TAG,"Permission is granted");
+        } else { //permission is automatically granted on sdk<23 upon installation
+            Log.v(TAG, "Permission is granted");
             return true;
         }
     }
 
-    public  boolean isStoragePermissionGrantedRead() {
+    public boolean isStoragePermissionGrantedRead() {
         if (Build.VERSION.SDK_INT >= 23) {
             if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
                     == PackageManager.PERMISSION_GRANTED) {
-                Log.v(TAG,"Permission is granted");
+                Log.v(TAG, "Permission is granted");
                 return true;
             } else {
 
-                Log.v(TAG,"Permission is revoked");
+                Log.v(TAG, "Permission is revoked");
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
                 return false;
             }
-        }
-        else { //permission is automatically granted on sdk<23 upon installation
-            Log.v(TAG,"Permission is granted");
+        } else { //permission is automatically granted on sdk<23 upon installation
+            Log.v(TAG, "Permission is granted");
             return true;
         }
     }
@@ -206,11 +213,9 @@ public class LoginActivity extends AppCompatActivity {
                 String stud_contact = contact.getText().toString();
                 String stud_password = password.getText().toString();
 
-                if(isInternetAvailable()==true)
-                {
+                if (isInternetAvailable() == true) {
                     LoginAttempt(stud_contact, stud_password);
-                }else
-                {
+                } else {
 
                     mProgress.dismiss();
                     showalert("No Internet Connection ");
@@ -260,7 +265,9 @@ public class LoginActivity extends AppCompatActivity {
                 if (passwordistrue == 1 && contactistrue == 1) {
 
                     bt_signin.setEnabled(true);
-                    bt_signin.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                    bt_signin.setBackgroundColor(getResources().getColor(R.color.black)
+                          //  getResources().getColor(R.color.colorPrimary)
+                    );
 
                 } else if (passwordistrue == 0 || contactistrue == 0) {
                     bt_signin.setEnabled(false);
@@ -273,57 +280,52 @@ public class LoginActivity extends AppCompatActivity {
             public void afterTextChanged(Editable s) {
 
 
+            }
+        });
+
+        password.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                int f2 = password.getText().length();
+
+
+                if (f2 < 5) {
+                    passwordistrue = 0;
+                    setUpTextForWrongField(5);
+                } else {
+                    passwordistrue = 1;
+                    setUpTextForWrongField(6);
+                }
+
+                if (passwordistrue == 1 && contactistrue == 1) {
+
+                    bt_signin.setEnabled(true);
+                    bt_signin.setBackgroundColor(getResources().getColor(R.color.black)
+                          //  getColor(R.color.colorPrimary)
+                    );
+
+                } else if (passwordistrue == 0 || contactistrue == 0) {
+                    bt_signin.setEnabled(false);
+                    bt_signin.setBackgroundColor(getResources().getColor(R.color.grey));
+
+                }
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
 
             }
         });
 
-       password.addTextChangedListener(new TextWatcher() {
-           @Override
-           public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-           }
-
-           @Override
-           public void onTextChanged(CharSequence s, int start, int before, int count) {
-               int f2 = password.getText().length();
-
-
-
-               if (f2 < 5) {
-                   passwordistrue = 0;
-                   setUpTextForWrongField(5);
-               } else {
-                   passwordistrue = 1;
-                   setUpTextForWrongField(6);
-               }
-
-               if (passwordistrue == 1 && contactistrue == 1) {
-
-                   bt_signin.setEnabled(true);
-                   bt_signin.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-
-               } else if (passwordistrue == 0 || contactistrue == 0) {
-                   bt_signin.setEnabled(false);
-                   bt_signin.setBackgroundColor(getResources().getColor(R.color.grey));
-
-               }
-
-           }
-
-           @Override
-           public void afterTextChanged(Editable s) {
-
-           }
-       });
-
-
 
     }
 //------------------------------------------------------Listners End-----------------------------------------------------------
-
-
-
-
 
 
     private void checksharedpreferences() {
@@ -331,11 +333,14 @@ public class LoginActivity extends AppCompatActivity {
         boolean isLoggedIn = sessionHelper.isLoggedIn();
         if (isLoggedIn) {
             Log.d("inside if", "launching activity");
-            startActivity(new Intent(c, MainActivity.class));
+            Intent intent = new Intent(c, MainActivity.class);
+            intent.putExtra("Contact",sessionHelper.getKeyContact());
+
+            startActivity(intent);
+
             finish();
         }
     }
-
 
 
     //-----------------------------------------------API CALL-----------------------------------------------------------------
@@ -386,6 +391,8 @@ public class LoginActivity extends AppCompatActivity {
 
                 Log.d(TAG, "onFailure: Something went wrong: " + t.toString());
 
+                mProgress.dismiss();
+                Toast.makeText(LoginActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -393,34 +400,42 @@ public class LoginActivity extends AppCompatActivity {
 //--------------------------------------------------------------------------------------------------------------------------------
 
 
-
-
     public void handleresponse(String contact, String sid) {
 
         Log.d(TAG, "handleresponse: Handling the Response");
         sessionHelper.createLoginSession(contact, sid);
+
+        setUser_Contact_login(contact);
+
+        //------------sending data to account frag-------------
+
+// set Fragmentclass Arguments
+
+        //-------------------------------------
+
         mProgress.dismiss();
-        startActivity(new Intent(LoginActivity.this, MainActivity.class));
+        Intent intent = new Intent(c, MainActivity.class);
+        intent.putExtra("Contact",getUser_Contact_login());
 
-       }
+        startActivity(intent);
+
+    }
 
 
-
-
-       /*
-       Setup text for wrong field
-        */
-       @SuppressLint("LongLogTag")
-       public void setUpTextForWrongField(int id) {
+    /*
+    Setup text for wrong field
+     */
+    @SuppressLint("LongLogTag")
+    public void setUpTextForWrongField(int id) {
 
            /*
            dismiss progress bar
             */
-           mProgress.dismiss();
+        mProgress.dismiss();
 
 
-           incorrect_contact = (TextView) findViewById(R.id.wrong_contact);
-           incorrect_password = (TextView) findViewById(R.id.wrong_password);
+        incorrect_contact = (TextView) findViewById(R.id.wrong_contact);
+        incorrect_password = (TextView) findViewById(R.id.wrong_password);
         if (id == 1) {
 
             incorrect_contact.setText(R.string.incorrect_contact);
@@ -470,8 +485,6 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
-
-
     void showalert(String text) {
 
 
@@ -494,6 +507,15 @@ public class LoginActivity extends AppCompatActivity {
         alert11.show();
 
     }
+
+    public void setUser_Contact_login(String s) {
+        User_Contact_login = s;
+    }
+
+    public String getUser_Contact_login() {
+        return User_Contact_login;
+    }
+
 }
 //-----------------------------------------end !!
 

@@ -10,11 +10,14 @@ import com.example.suhail.loginattempt1.Models.LoginStudent;
 import com.example.suhail.loginattempt1.Models.RegisterStudent;
 import com.example.suhail.loginattempt1.Models.ResponseForRegistration;
 import com.example.suhail.loginattempt1.Models.notice_info;
+import com.example.suhail.loginattempt1.Models.student_info;
 
 import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Url;
@@ -34,6 +37,11 @@ public interface ApiInterface {
 
     @POST("create/student")
     Call<ResponseForRegistration> createStudent(@Body RegisterStudent registerStudent);
+
+    @POST("getinfo/stu/one")
+    @FormUrlEncoded
+    Call<student_info> getstudentinfo(@Field("contact") String contact);
+
 
 }
 

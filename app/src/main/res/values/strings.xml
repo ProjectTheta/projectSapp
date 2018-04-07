@@ -10,7 +10,7 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-<string name="incorrect_contact">*Invalid Contact or Email*</string>
+    <string name="incorrect_contact">*Invalid Contact or Email*</string>
     <string name="wrong_phone_no">*Please enter a valid phone number*</string>
     <string name="incorrect_password">*Incorrect Password*</string>
     <string name="server_error">*server error, please try again*</string>
@@ -26,4 +26,10 @@
     <string name="password">Password</string>
     <string name="register">Register</string>
     <string name="logout">logout</string>
+    <string name="email1">Email :</string>
+    <string name="contact1">Contact :</string>
+    <string name="data_not_available">Data not available</string>
+    <string name="contact_and_email_cannot_be_changed">Contact and Email cannot be changed.</string>
+    <string name="change_password">Change Password</string>
+    <string name="title_activity_upadate">UpadateActivity</string>
 </resources>

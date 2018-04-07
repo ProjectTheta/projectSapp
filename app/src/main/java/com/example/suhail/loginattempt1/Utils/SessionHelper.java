@@ -94,6 +94,16 @@ public class SessionHelper extends LoginActivity {
 
     }
 
+    public String getKeyContact(){
+
+        if(sharedPreferences!=null)
+        {
+            return sharedPreferences.getString(KEY_CONTACT,null);
+
+        }
+
+        return  null;
+    }
 
     /**
      * Check if no user logged in after starting main activity and if not logged in send to the login activity
